@@ -7,11 +7,12 @@ SERVER_PORT = 5656
 
 
 def main():
-    while True:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        server_address = (SERVER_IP, SERVER_PORT)
-        sock.connect(server_address)
+    server_address = (SERVER_IP, SERVER_PORT)
+    sock.connect(server_address)
+    
+    while True:
 
         msg = input("Enter message: ")
         sock.sendall(msg.encode())
