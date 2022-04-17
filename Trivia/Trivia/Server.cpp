@@ -1,8 +1,11 @@
 #include "Server.h"
 #include "WSAInitializer.h"
+#include "JsonResponsePacketSerializer.h"
+#include "JsonResoponsePacketDeserializer.h"
 #include <iostream>
 #include <string>
 #include <thread>
+
 
 void Server::run() {
     std::thread t_connector(&Communicator::startHandleRequests,
@@ -18,7 +21,7 @@ void Server::run() {
     }
 }
 
-void main() 
+int main() 
 {
     try
     {
@@ -30,4 +33,6 @@ void main()
     {
         std::cout << e.what();
     }
+
+    return 0;
 }

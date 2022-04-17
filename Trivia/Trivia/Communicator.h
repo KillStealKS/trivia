@@ -17,6 +17,7 @@ class Communicator {
   private:
     SOCKET m_serverSocket;
     std::map<SOCKET, IRequestHandler *> m_clients;
+    static int m_idCounter;
 
     void bindAndListen();
     void handleNewClient(SOCKET clientSocket);
