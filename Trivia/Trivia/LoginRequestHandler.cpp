@@ -14,16 +14,16 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo reqInf)
 	
 	if (isRequestRelevant(reqInf))
 	{
-		if (reqInf.buffer.front() == RQ_LOGIN)
+		if (reqInf.buffer.front() == RQ_SIGNUP)
+		{
+			SignupResponse signupRes = { RS_SIGNUP };
+			reqRes.response = JsonResoponsePacketSerializer::serializeResponse(signupRes);
+			reqRes.newHandler = new LoginRequestHandler;
+		}
+		else if (reqInf.buffer.front() == RQ_LOGIN)
 		{
 			LoginResponse loginRes = { RS_LOGIN };
 			reqRes.response = JsonResoponsePacketSerializer::serializeResponse(loginRes);
-			reqRes.newHandler = new LoginRequestHandler;
-		}
-		else if (reqInf.buffer.front() == RQ_SIGNUP)
-		{
-			LoginResponse signupRes = { RS_LOGIN };
-			reqRes.response = JsonResoponsePacketSerializer::serializeResponse(signupRes);
 			reqRes.newHandler = new LoginRequestHandler;
 		}
 	}

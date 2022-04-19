@@ -81,7 +81,7 @@ void Communicator::handleNewClient(SOCKET clientSocket) {
 
             RequestInfo reqInf = { m_idCounter++, system_clock::to_time_t(system_clock::now()), request };
             RequestResult reqRes = m_clients[clientSocket]->handleRequest(reqInf);
-            
+
             delete m_clients[clientSocket];
             m_clients[clientSocket] = reqRes.newHandler;
             
