@@ -36,20 +36,20 @@ def main():
             code = LOGIN_CODE
 
         content = ubjson.dumpb(content)
-        len = len(content).to_bytes(4, byteorder="big")
+        coontent_len = len(content).to_bytes(4, byteorder="big")
         code = code.to_bytes(1, byteorder="big")
 
-        msg = code + len + content
-        sock.sendall(msg.encode())
+        msg = code + coontent_len + content
+        sock.sendall(msg)
 
         if msg == "QUIT":
             break
 
-        server_msg = sock.recv(1024).decode()
-        code = int.from_bytes(server_msg[0], byteorder="big")
-        len = int.from_bytes(server_msg[1:5], byteorder="big")
+        server_msg = sock.recv(1024)
+        code = server_msg[0]
+        coontent_len = int.from_bytes(server_msg[1:5], byteorder="little")
         content = ubjson.loadb(server_msg[5:])
-        print(code, len, content)
+        print(code, coontent_len, content)
 
     sock.close()
 
