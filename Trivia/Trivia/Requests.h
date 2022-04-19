@@ -4,8 +4,8 @@
 
 enum requestCodes
 {
-	RQ_LOGIN = 1,
-	RQ_SIGNUP
+	RQ_SIGNUP = 1,
+	RQ_LOGIN
 };
 
 typedef struct LoginRequest
