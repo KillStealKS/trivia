@@ -7,12 +7,11 @@
 
 using json = nlohmann::json;
 
-class JsonResoponsePacketSerializer
-{
-public:
-	static std::vector<unsigned char> serializeResponse(ErrorResponse e);
-	static std::vector<unsigned char> serializeResponse(LoginResponse l);
-	static std::vector<unsigned char> serializeResponse(SignupResponse s);
-private:
+class JsonResponsePacketSerializer {
+  public:
+    static std::vector<unsigned char> serializeResponse(ErrorResponse e);
+    static std::vector<unsigned char> serializeResponse(LoginResponse l);
+    static std::vector<unsigned char> serializeResponse(SignupResponse s);
 
+  private:
 };
