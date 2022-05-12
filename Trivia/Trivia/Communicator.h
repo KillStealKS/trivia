@@ -2,6 +2,7 @@
 #define COMMUNICATOR_H_
 
 #include "IRequestHandler.h"
+#include "RequestHandlerFactory.h"
 #include <WinSock2.h>
 #include <map>
 
@@ -9,7 +10,7 @@
 
 class Communicator {
   public:
-    Communicator();
+    Communicator(RequestHandlerFactory& factory);
     ~Communicator();
 
     void startHandleRequests();
@@ -17,6 +18,7 @@ class Communicator {
   private:
     SOCKET m_serverSocket;
     std::map<SOCKET, IRequestHandler *> m_clients;
+    RequestHandlerFactory& m_handlerFactory;
     static int m_idCounter;
 
     void bindAndListen();
