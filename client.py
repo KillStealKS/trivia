@@ -2,13 +2,22 @@
 
 import socket
 import ubjson
-import struct
+import re
 
 SERVER_IP = "localhost"
 SERVER_PORT = 5656
 
-SIGNUP_CODE = 1
-LOGIN_CODE = 2
+SIGNUP_CODE = 2
+LOGIN_CODE = 1
+
+
+def get_input(name, regex=".*"):
+    res = input(f"Enter {name}: ")
+    if re.search(regex, res):
+        return res
+    else:
+        print("Invalid input. Please try again.")
+        return get_input(name, regex)
 
 
 def main():
@@ -24,12 +33,14 @@ def main():
             else False
         )
 
-        username = input("Enter username: ")
-        password = input("Enter password: ")
+        username = get_input("username")
+        password = get_input(
+            "password", "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$"
+        )
 
         if is_signup:
-            mail = input("Enter mail: ")
-            content = {"username": username, "password": password, "mail": mail}
+            email = input("Enter email: ")
+            content = {"username": username, "password": password, "email": email}
             code = SIGNUP_CODE
         else:
             content = {"username": username, "password": password}

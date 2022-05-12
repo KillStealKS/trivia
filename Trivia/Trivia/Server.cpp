@@ -1,10 +1,18 @@
 #include "Server.h"
 #include "JsonResponsePacketDeserializer.h"
 #include "JsonResponsePacketSerializer.h"
-#include "WSAInitializer.h"
 #include <iostream>
 #include <string>
 #include <thread>
+
+/**
+ * @brief Construct a new Server::Server object
+ */
+Server::Server()
+    : m_handlerFactory(),
+      m_communicator(m_handlerFactory),
+      m_database(m_handlerFactory.getDatabase()) {
+}
 
 /**
  * @brief Starts the server.
@@ -23,16 +31,4 @@ void Server::run() {
         if (input == "exit")
             return;
     }
-}
-
-int main() {
-    try {
-        WSAInitializer WSAInit;
-        Server server;
-        server.run();
-    } catch (const std::exception &e) {
-        std::cout << e.what();
-    }
-
-    return 0;
 }

@@ -13,7 +13,7 @@ int Communicator::m_idCounter = 1;
 /**
  * @brief Construct a new Communicator:: Communicator object.
  */
-Communicator::Communicator() {
+Communicator::Communicator(RequestHandlerFactory& factory) : m_handlerFactory(factory) {
     // Create new socket.
     m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -66,7 +66,7 @@ void Communicator::startHandleRequests() {
 void Communicator::bindAndListen() {
     SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
     if (client_socket == INVALID_SOCKET)
-        throw std::exception(__FUNCTION__);
+        throw std::exception(__FUNCTION__ " - bind new client socket");
 
     std::cout << "Client accepted." << std::endl;
 
@@ -82,7 +82,7 @@ void Communicator::bindAndListen() {
  */
 void Communicator::handleNewClient(SOCKET clientSocket) {
     // Add client to map.
-    m_clients.insert({clientSocket, new LoginRequestHandler});
+    m_clients.insert({clientSocket, m_handlerFactory.createLoginRequestHandler()});
     std::cout << "client inserted\n";
 
     while (true) {
@@ -105,9 +105,6 @@ void Communicator::handleNewClient(SOCKET clientSocket) {
                 m_clients[clientSocket]->handleRequest(reqInf);
 
             // Create new request handler for socket.
-            RequestInfo reqInf = { m_idCounter++, system_clock::to_time_t(system_clock::now()), request };
-            RequestResult reqRes = m_clients[clientSocket]->handleRequest(reqInf);
-
             delete m_clients[clientSocket];
             m_clients[clientSocket] = reqRes.newHandler;
 
