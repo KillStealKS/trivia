@@ -11,7 +11,7 @@ class Server {
 
   private:
     RequestHandlerFactory m_handlerFactory;
-    IDatabase* m_database;
+    IDatabase *m_database;
     Communicator m_communicator;
 };
 

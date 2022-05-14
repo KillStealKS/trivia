@@ -6,8 +6,7 @@ int main() {
         WSAInitializer WSAInit;
         Server server;
         server.run();
-    }
-    catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         std::cout << e.what();
     }
 

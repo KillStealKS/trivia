@@ -13,7 +13,8 @@ int Communicator::m_idCounter = 1;
 /**
  * @brief Construct a new Communicator:: Communicator object.
  */
-Communicator::Communicator(RequestHandlerFactory& factory) : m_handlerFactory(factory) {
+Communicator::Communicator(RequestHandlerFactory &factory)
+    : m_handlerFactory(factory) {
     // Create new socket.
     m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -82,7 +83,8 @@ void Communicator::bindAndListen() {
  */
 void Communicator::handleNewClient(SOCKET clientSocket) {
     // Add client to map.
-    m_clients.insert({clientSocket, m_handlerFactory.createLoginRequestHandler()});
+    m_clients.insert(
+        {clientSocket, m_handlerFactory.createLoginRequestHandler()});
     std::cout << "client inserted\n";
 
     while (true) {
