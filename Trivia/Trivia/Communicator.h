@@ -10,7 +10,7 @@
 
 class Communicator {
   public:
-    Communicator(RequestHandlerFactory& factory);
+    Communicator(RequestHandlerFactory &factory);
     ~Communicator();
 
     void startHandleRequests();
@@ -18,7 +18,7 @@ class Communicator {
   private:
     SOCKET m_serverSocket;
     std::map<SOCKET, IRequestHandler *> m_clients;
-    RequestHandlerFactory& m_handlerFactory;
+    RequestHandlerFactory &m_handlerFactory;
     static int m_idCounter;
 
     void bindAndListen();

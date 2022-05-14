@@ -9,10 +9,8 @@
  * @brief Construct a new Server::Server object
  */
 Server::Server()
-    : m_handlerFactory(),
-      m_communicator(m_handlerFactory),
-      m_database(m_handlerFactory.getDatabase()) {
-}
+    : m_handlerFactory(), m_communicator(m_handlerFactory),
+      m_database(m_handlerFactory.getDatabase()) {}
 
 /**
  * @brief Starts the server.
