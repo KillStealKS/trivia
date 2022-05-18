@@ -5,6 +5,12 @@
 #include <string>
 #include <thread>
 
+Server::Server() : m_communicator(Communicator(m_handlerFactory)), m_database(new SQLiteDatabase()) {
+    m_handlerFactory = RequestHandlerFactory();
+    Communicator m_communicator(m_handlerFactory);
+    m_database->open();
+}
+
 /**
  * @brief Construct a new Server::Server object
  */
