@@ -13,6 +13,8 @@ class Server {
     RequestHandlerFactory m_handlerFactory;
     IDatabase *m_database;
     Communicator m_communicator;
+    IDatabase* m_database;
+    RequestHandlerFactory m_handlerFactory;
 };
 
 #endif // !SERVER_H_
