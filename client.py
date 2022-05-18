@@ -40,7 +40,7 @@ def main():
         ).hexdigest()
 
         if is_signup:
-            email = get_input("email", "^\w+@\w+$")
+            email = get_input("email", "^\S+@\S+$")
             addr = get_input("addres", "^\([A-z]+, \d+, [A-z]+\)$")
             phone = get_input("phone number", "^0\d{1,2}\d{7}$")
             date = get_input(
