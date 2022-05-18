@@ -25,7 +25,10 @@ bool SQLiteDatabase::open() {
             "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
             "Username TEXT NOT NULL,"
             "Password TEXT NOT NULL,"
-            "Email TEXT NOT NULL);";
+            "Email TEXT NOT NULL,"
+            "Address TEXT NOT NULL,"
+            "Phone TEXT NOT NULL,"
+            "Date TEXT NOT NULL);";
         res = sqlite3_exec(m_Database, sqlStatement.c_str(), nullptr, nullptr,
                            &errMsg);
         if (res != SQLITE_OK) {
@@ -79,13 +82,15 @@ bool SQLiteDatabase::doesPasswordMatch(std::string username,
  * @brief adds a user to the database
  */
 void SQLiteDatabase::addNewUser(std::string username, std::string password,
-                                std::string email) {
+                                std::string email, std::string addr,
+                                std::string phone, std::string date) {
     char *errMsg;
     std::vector<User> userList;
-    std::string sqlStatement = "INSERT INTO Users (Username, Password, Email)"
-                               " VALUES(\"" +
-                               username + "\", \"" + password + "\", \"" +
-                               email + "\"); ";
+    std::string sqlStatement =
+        "INSERT INTO Users (Username, Password, Email, Address, Phone, Date)"
+        " VALUES(\"" +
+        username + "\", \"" + password + "\", \"" + email + "\", \"" + addr +
+        "\", \"" + phone + "\", \"" + date + "\");";
 
     int res = sqlite3_exec(m_Database, sqlStatement.c_str(), nullptr, nullptr,
                            &errMsg);

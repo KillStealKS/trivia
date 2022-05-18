@@ -14,7 +14,8 @@ class SQLiteDatabase : public IDatabase {
     bool doesUserExist(std::string username) override;
     bool doesPasswordMatch(std::string username, std::string password) override;
     void addNewUser(std::string username, std::string password,
-                    std::string email) override;
+                    std::string email, std::string addr, std::string phone,
+                    std::string date) override;
     static int userCallback(void *data, int argc, char **argv,
                             char **azColName);
 

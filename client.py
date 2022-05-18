@@ -3,6 +3,7 @@
 import socket
 import ubjson
 import re
+import hashlib
 
 SERVER_IP = "localhost"
 SERVER_PORT = 5656
@@ -27,20 +28,32 @@ def main():
     sock.connect(server_address)
 
     while True:
-        is_signup = (
-            True
-            if input("S for signup, any other key for login: ").lower() == "s"
-            else False
-        )
+        print("Welcome to the Magshimim Trivia Game!\n" "1. Signup\n" "2. Login\n")
+        is_signup = True if int(input("Choose an option: ")) == 1 else False
 
         username = get_input("username")
-        password = get_input(
-            "password", "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$"
-        )
+        password = hashlib.sha256(
+            get_input(
+                "password",
+                "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$",
+            ).encode()
+        ).hexdigest()
 
         if is_signup:
-            email = input("Enter email: ")
-            content = {"username": username, "password": password, "email": email}
+            email = get_input("email", "^\w+@\w+$")
+            addr = get_input("addres", "^\([A-z]+, \d+, [A-z]+\)$")
+            phone = get_input("phone number", "^0\d{1,2}\d{7}$")
+            date = get_input(
+                "birth date", "^((\d{2}\/\d{2}\/\d{4})|(\d{2}\.\d{2}\.\d{4}))$"
+            )
+            content = {
+                "username": username,
+                "password": password,
+                "email": email,
+                "address": addr,
+                "phone": phone,
+                "date": date,
+            }
             code = SIGNUP_CODE
         else:
             content = {"username": username, "password": password}

@@ -63,6 +63,9 @@ SignupRequest JsonResponsePacketDeserializer::deserializeSignupRequest(
     newSignupRequest.username = msg["username"];
     newSignupRequest.password = msg["password"];
     newSignupRequest.email = msg["email"];
+    newSignupRequest.addr = msg["address"];
+    newSignupRequest.phone = msg["phone"];
+    newSignupRequest.date = msg["date"];
 
     return newSignupRequest;
 }

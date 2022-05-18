@@ -163,6 +163,7 @@
     <ClCompile Include="JsonResponsePacketSerializer.cpp" />
     <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Server.cpp" />

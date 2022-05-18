@@ -32,11 +32,12 @@ LoginManager::LoginManager(IDatabase *database)
  * @brief adds a user to the database
  */
 void LoginManager::signup(std::string username, std::string password,
-                          std::string email) {
+                          std::string email, std::string addr,
+                          std::string phone, std::string date) {
     if (!m_database->doesUserExist(
             username)) // don't want 2 users with the same username
         std::lock_guard<std::mutex> databaseLock(*m_databaseMutex);
-    m_database->addNewUser(username, password, email);
+    m_database->addNewUser(username, password, email, addr, phone, date);
 }
 
 /*

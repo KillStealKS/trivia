@@ -49,7 +49,8 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo reqInf) {
                     reqInf.buffer);
             try {
                 m_loginManager.signup(userMsg.username, userMsg.password,
-                                      userMsg.email);
+                                      userMsg.email, userMsg.addr,
+                                      userMsg.phone, userMsg.date);
                 SignupResponse signupRes = {RS_SIGNUP};
                 reqRes.response =
                     JsonResponsePacketSerializer::serializeResponse(signupRes);
