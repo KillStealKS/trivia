@@ -13,4 +13,7 @@ typedef struct SignupRequest {
     std::string username;
     std::string password;
     std::string email;
+    std::string addr;
+    std::string phone;
+    std::string date;
 } SignupRequest;

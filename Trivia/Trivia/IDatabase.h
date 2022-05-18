@@ -21,5 +21,6 @@ class IDatabase {
     virtual bool doesPasswordMatch(std::string username,
                                    std::string password) = 0;
     virtual void addNewUser(std::string username, std::string password,
-                            std::string email) = 0;
+                            std::string email, std::string addr,
+                            std::string phone, std::string date) = 0;
 };
