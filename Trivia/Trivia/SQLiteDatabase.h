@@ -19,6 +19,11 @@ class SQLiteDatabase : public IDatabase {
     static int userCallback(void *data, int argc, char **argv,
                             char **azColName);
 
+    //Question methods
+    std::vector<Question> getQuestions(int amount) override;
+    static int questionCallback(void* data, int argc, char** argv,
+                            char** azColName);
+
   private:
     sqlite3 *m_Database;
 };
