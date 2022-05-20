@@ -1,4 +1,5 @@
 #include "SQLiteDatabase.h"
+#include <string>
 
 /**
  * @brief opens the database, creating it if needed
@@ -118,5 +119,54 @@ int SQLiteDatabase::userCallback(void *data, int argc, char **argv,
     }
     if (argc > 0)
         userList->push_back(user);
+    return 0;
+}
+
+
+//Question methods
+
+/**
+* @brief returns questions from the database
+* 
+* @param amount The amount of questions to return
+*/
+std::vector<Question> SQLiteDatabase::getQuestions(int amount) {
+    char* errMsg;
+    std::vector<Question> questionList;
+    std::string sqlStatement = "SELECT * FROM Questions ORDER BY RANDOM() LIMIT " + 
+        std::to_string(amount) + ";";
+
+    int res = sqlite3_exec(m_Database, sqlStatement.c_str(),
+        SQLiteDatabase::questionCallback, &questionList, &errMsg);
+    if (res == SQLITE_OK)
+        return questionList;
+    else
+        throw std::exception(__FUNCTION__ " - get questions failed");
+}
+
+/**
+ * @brief callback function for Question
+ */
+int SQLiteDatabase::questionCallback(void* data, int argc, char** argv, char** azColName)
+{
+    std::vector<Question>* questionList = (std::vector<Question> *)data;
+    Question question;
+
+    for (int i = 0; i < argc; i++) {
+        if (std::string(azColName[i]) == "ID")
+            question.id = atoi(argv[i]);
+        else if (std::string(azColName[i]) == "Question")
+            question.question = argv[i];
+        else if (std::string(azColName[i]) == "Answer")
+            question.answer = argv[i];
+        else if (std::string(azColName[i]) == "Incorrect1")
+            question.incorrect1 = argv[i];
+        else if (std::string(azColName[i]) == "Incorrect2")
+            question.incorrect2 = argv[i];
+        else if (std::string(azColName[i]) == "Incorrect3")
+            question.incorrect3 = argv[i];
+    }
+    if (argc > 0)
+        questionList->push_back(question);
     return 0;
 }

@@ -11,6 +11,15 @@ typedef struct User {
     std::string email;
 } User;
 
+typedef struct Question {
+    int id;
+    std::string question;
+    std::string answer;
+    std::string incorrect1;
+    std::string incorrect2;
+    std::string incorrect3;
+};
+
 class IDatabase {
   public:
     virtual ~IDatabase() = default;
@@ -23,4 +32,7 @@ class IDatabase {
     virtual void addNewUser(std::string username, std::string password,
                             std::string email, std::string addr,
                             std::string phone, std::string date) = 0;
+
+    //Question methods
+    virtual std::vector<Question> getQuestions(int amount) = 0;
 };
