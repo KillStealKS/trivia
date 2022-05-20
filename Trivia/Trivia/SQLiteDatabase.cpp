@@ -126,7 +126,7 @@ void SQLiteDatabase::addNewUser(std::string username, std::string password,
         "VALUES (\"" +
         username + "\",0 ,0 ,0 ,0 ,0 ,0);";
 
-    int res = sqlite3_exec(m_Database, sqlStatement.c_str(), nullptr, nullptr,
+    res = sqlite3_exec(m_Database, sqlStatement.c_str(), nullptr, nullptr,
                            &errMsg);
     if (res != SQLITE_OK)
         throw std::exception(
