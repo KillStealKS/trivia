@@ -1,5 +1,8 @@
 #include "StatisticsManager.h"
 
+StatisticsManager::StatisticsManager(IDatabase *database)
+    : m_database(database), m_databaseMutex(new std::mutex) {}
+
 /**
  * @brief Gets top 5 scores.
  *

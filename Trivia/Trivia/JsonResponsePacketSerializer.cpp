@@ -96,7 +96,8 @@ JsonResponsePacketSerializer::serializeResponse(SignupResponse signupResponse) {
  * @param logoutResponse Response to serialize.
  * @return std::vector<unsigned char> Serialized response.
  */
-std::vector<unsigned char> serializeResponse(LogoutResponse logoutResponse) {
+std::vector<unsigned char>
+JsonResponsePacketSerializer::serializeResponse(LogoutResponse logoutResponse) {
     std::vector<unsigned char> buffer;
     json responseJson = json::object();
     responseJson["status"] = logoutResponse.status;
@@ -125,19 +126,23 @@ std::vector<unsigned char> serializeResponse(LogoutResponse logoutResponse) {
  * @param getRoomsResponse Response to serialize.
  * @return std::vector<unsigned char> Serialized response.
  */
-std::vector<unsigned char> serializeResponse(GetRoomsResponse getRoomResponse) {
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    GetRoomsResponse getRoomResponse) {
     std::vector<unsigned char> buffer;
     json responseJson = json::object();
     responseJson["status"] = getRoomResponse.status;
+    responseJson["rooms"] = json::array();
+    
     for (auto r : getRoomResponse.rooms) {
         json roomJson = json::object();
+        roomJson["roomID"] = r.id;
         roomJson["name"] = r.name;
         roomJson["maxPlayers"] = r.maxPlayers;
         roomJson["numOfQuestions"] = r.numOfQuestions;
         roomJson["timePerQuestion"] = r.timePerQuestion;
         roomJson["isActive"] = r.isActive;
-
-        responseJson["rooms"][r.id] = roomJson;
+        
+        responseJson["rooms"].insert(responseJson["rooms"].end(), roomJson);
     }
 
     // Code
@@ -164,14 +169,14 @@ std::vector<unsigned char> serializeResponse(GetRoomsResponse getRoomResponse) {
  * @param getPlayersResponse Response to serialize.
  * @return std::vector<unsigned char> Serialized response.
  */
-std::vector<unsigned char>
-serializeResponse(GetPlayersInRoomResponse getPlayersResponse) {
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    GetPlayersInRoomResponse getPlayersResponse) {
     std::vector<unsigned char> buffer;
     json responseJson = json::object();
     responseJson["playersInRoom"] = getPlayersResponse.players;
 
     // Code
-    buffer.push_back((unsigned char)RS_PLAYERSINROOM);
+    buffer.push_back((unsigned char)RS_GETPLAYERS);
 
     // Length
     unsigned char len[4];
@@ -194,8 +199,8 @@ serializeResponse(GetPlayersInRoomResponse getPlayersResponse) {
  * @param joinRoomResponse Response to serialize.
  * @return std::vector<unsigned char> Serialized response.
  */
-std::vector<unsigned char>
-serializeResponse(JoinRoomResponse joinRoomResponse) {
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    JoinRoomResponse joinRoomResponse) {
     std::vector<unsigned char> buffer;
     json responseJson = json::object();
     responseJson["status"] = joinRoomResponse.status;
@@ -224,8 +229,8 @@ serializeResponse(JoinRoomResponse joinRoomResponse) {
  * @param createRoomResponse Response to serialize.
  * @return std::vector<unsigned char> Serialized response.
  */
-std::vector<unsigned char>
-serializeResponse(CreateRoomResponse createRoomResponse) {
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    CreateRoomResponse createRoomResponse) {
     std::vector<unsigned char> buffer;
     json responseJson = json::object();
     responseJson["status"] = createRoomResponse.status;
@@ -254,8 +259,8 @@ serializeResponse(CreateRoomResponse createRoomResponse) {
  * @param getStatsResponse Response to serialize.
  * @return std::vector<unsigned char> Serialized response.
  */
-std::vector<unsigned char>
-serializeResponse(GetPersonalStatsResponse getStatsResponse) {
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    GetPersonalStatsResponse getStatsResponse) {
     std::vector<unsigned char> buffer;
     json responseJson = json::object();
     responseJson["status"] = getStatsResponse.status;
@@ -273,7 +278,32 @@ serializeResponse(GetPersonalStatsResponse getStatsResponse) {
         getStatsResponse.statistics.highscore;
 
     // Code
-    buffer.push_back((unsigned char)RS_CREATEROOM);
+    buffer.push_back((unsigned char)RS_PERSONALSTATS);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    GetHighScoreResponse getHighscoreResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = getHighscoreResponse.status;
+    responseJson["statistics"] = getHighscoreResponse.statistics;
+
+    // Code
+    buffer.push_back((unsigned char)RS_HIGHSCORE);
 
     // Length
     unsigned char len[4];

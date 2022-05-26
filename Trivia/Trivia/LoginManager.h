@@ -5,7 +5,6 @@
 #include <mutex>
 #include <vector>
 
-
 class LoggedUser {
   public:
     LoggedUser(std::string username);
@@ -23,7 +22,7 @@ class LoginManager {
 
     void signup(std::string username, std::string password, std::string email,
                 std::string addr, std::string phone, std::string date);
-    void login(std::string username, std::string password);
+    LoggedUser login(std::string username, std::string password);
     void logout(std::string username);
 
   private:

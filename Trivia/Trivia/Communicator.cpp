@@ -107,8 +107,10 @@ void Communicator::handleNewClient(SOCKET clientSocket) {
                 m_clients[clientSocket]->handleRequest(reqInf);
 
             // Create new request handler for socket.
-            delete m_clients[clientSocket];
-            m_clients[clientSocket] = reqRes.newHandler;
+            if (reqRes.newHandler != nullptr) {
+                delete m_clients[clientSocket];
+                m_clients[clientSocket] = reqRes.newHandler;
+            }
 
             // Send response to client.
             for (int i = 0; i < reqRes.response.size(); i++)

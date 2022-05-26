@@ -116,21 +116,25 @@ void SQLiteDatabase::addNewUser(std::string username, std::string password,
 
     int res = sqlite3_exec(m_Database, sqlStatement.c_str(), nullptr, nullptr,
                            &errMsg);
-    if (res != SQLITE_OK)
+    if (res != SQLITE_OK) {
+        std::cout << errMsg;
         throw std::exception(__FUNCTION__ " - database Users insertion failed");
+    }
 
     // Statistics table insertion
     sqlStatement =
-        "INSERT INTO Statistics (Username, TotalGames, WonGames, TotalAnswers, "
+        "INSERT INTO Statistics (Username, TotalGames, GamesWon, TotalAnswers, "
         "CorrectAnswers, TotalAnswerTime, Highscore) "
         "VALUES (\"" +
-        username + "\",0 ,0 ,0 ,0 ,0 ,0);";
+        username + "\", 0, 0, 0, 0, 0, 0);";
 
     res = sqlite3_exec(m_Database, sqlStatement.c_str(), nullptr, nullptr,
-                           &errMsg);
-    if (res != SQLITE_OK)
+                       &errMsg);
+    if (res != SQLITE_OK) {
+        std::cout << errMsg;
         throw std::exception(
             __FUNCTION__ " - database Statistics insertion failed");
+    }
 }
 
 /**
@@ -204,6 +208,11 @@ float SQLiteDatabase::getPlayerAverageTime(std::string username) {
         throw std::exception(__FUNCTION__ " - average answer time failed");
 }
 
+/**
+ * @brief Returns the amount of answers a player has guessed correctly
+ *
+ * @param username Name of the player
+ */
 int SQLiteDatabase::getNumOfCorrectAnswers(std::string username) {
     char *errMsg;
     std::vector<Statistics> statisticsList;
@@ -220,6 +229,11 @@ int SQLiteDatabase::getNumOfCorrectAnswers(std::string username) {
             __FUNCTION__ " - number of correct answers failed");
 }
 
+/**
+ * @brief Returns the amount of answers a player has answered
+ *
+ * @param username Name of the player
+ */
 int SQLiteDatabase::getNumOfTotalAnswers(std::string username) {
     char *errMsg;
     std::vector<Statistics> statisticsList;
@@ -235,6 +249,11 @@ int SQLiteDatabase::getNumOfTotalAnswers(std::string username) {
         throw std::exception(__FUNCTION__ " - total number of answers failed");
 }
 
+/**
+ * @brief Returns the amount of games a player has played
+ *
+ * @param username Name of the player
+ */
 int SQLiteDatabase::getNumOfPlayerGames(std::string username) {
     char *errMsg;
     std::vector<Statistics> statisticsList;
@@ -267,13 +286,14 @@ std::vector<std::string> SQLiteDatabase::getHighscores(int amount) {
                            SQLiteDatabase::statisticsCallback, &statisticsList,
                            &errMsg);
     if (res == SQLITE_OK) {
-        std::vector<std::string> res;
+        std::vector<std::string> highscores;
 
         for (auto i : statisticsList) {
-            res.push_back(std::to_string(i.highscore) + " - " + i.username);
+            highscores.push_back(std::to_string(i.highscore) + " - " +
+                                 i.username);
         }
 
-        return res;
+        return highscores;
     } else
         throw std::exception(__FUNCTION__ " - all time highscores failed");
 }
@@ -307,21 +327,23 @@ int SQLiteDatabase::statisticsCallback(void *data, int argc, char **argv,
     return 0;
 }
 
-//Question methods
+// Question methods
 
 /**
-* @brief returns questions from the database
-* 
-* @param amount The amount of questions to return
-*/
+ * @brief returns questions from the database
+ *
+ * @param amount The amount of questions to return
+ */
 std::vector<Question> SQLiteDatabase::getQuestions(int amount) {
-    char* errMsg;
+    char *errMsg;
     std::vector<Question> questionList;
-    std::string sqlStatement = "SELECT * FROM Questions ORDER BY RANDOM() LIMIT " + 
+    std::string sqlStatement =
+        "SELECT * FROM Questions ORDER BY RANDOM() LIMIT " +
         std::to_string(amount) + ";";
 
-    int res = sqlite3_exec(m_Database, sqlStatement.c_str(),
-        SQLiteDatabase::questionCallback, &questionList, &errMsg);
+    int res =
+        sqlite3_exec(m_Database, sqlStatement.c_str(),
+                     SQLiteDatabase::questionCallback, &questionList, &errMsg);
     if (res == SQLITE_OK)
         return questionList;
     else
@@ -331,9 +353,9 @@ std::vector<Question> SQLiteDatabase::getQuestions(int amount) {
 /**
  * @brief callback function for Question
  */
-int SQLiteDatabase::questionCallback(void* data, int argc, char** argv, char** azColName)
-{
-    std::vector<Question>* questionList = (std::vector<Question> *)data;
+int SQLiteDatabase::questionCallback(void *data, int argc, char **argv,
+                                     char **azColName) {
+    std::vector<Question> *questionList = (std::vector<Question> *)data;
     Question question;
 
     for (int i = 0; i < argc; i++) {

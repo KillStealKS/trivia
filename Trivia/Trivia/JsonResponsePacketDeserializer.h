@@ -18,5 +18,6 @@ class JsonResponsePacketDeserializer {
     deserializeJoinRoomRequest(std::vector<unsigned char> buffer);
     static CreateRoomRequest
     deserializeCreateRoomRequest(std::vector<unsigned char> buffer);
+
   private:
 };

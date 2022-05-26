@@ -76,7 +76,8 @@ SignupRequest JsonResponsePacketDeserializer::deserializeSignupRequest(
  * @param buffer Serialized request.
  * @return GetPlayersInRoomRequest Deserialized request.
  */
-GetPlayersInRoomRequest JsonResponsePacketDeserializer::deserializeGetPlayersRequest(
+GetPlayersInRoomRequest
+JsonResponsePacketDeserializer::deserializeGetPlayersRequest(
     std::vector<unsigned char> buffer) {
     GetPlayersInRoomRequest newGetPlayersRequest;
 
