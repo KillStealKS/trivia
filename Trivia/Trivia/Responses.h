@@ -11,12 +11,12 @@ enum responseCodes {
     RS_LOGIN = 1,
     RS_SIGNUP,
     RS_LOGOUT,
+    RS_GETPLAYERS,
     RS_GETROOMS,
-    RS_PLAYERSINROOM,
-    RS_HIGHSCORE,
-    RS_PERSONALSTATS,
     RS_JOINROOM,
-    RS_CREATEROOM
+    RS_CREATEROOM,
+    RS_PERSONALSTATS,
+    RS_HIGHSCORE
 };
 
 typedef struct LoginResponse {

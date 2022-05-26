@@ -19,6 +19,7 @@ class Room {
     std::vector<LoggedUser> m_users;
 
   public:
+    Room() {}
     Room(LoggedUser user, RoomData metadata);
 
     void addUser(LoggedUser user);

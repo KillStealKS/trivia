@@ -29,11 +29,11 @@ class SQLiteDatabase : public IDatabase {
     std::vector<std::string> getHighscores(int amount) override;
     static int statisticsCallback(void *data, int argc, char **argv,
                                   char **azColName);
-                                  
-    //Question methods
+
+    // Question methods
     std::vector<Question> getQuestions(int amount) override;
-    static int questionCallback(void* data, int argc, char** argv,
-                            char** azColName);
+    static int questionCallback(void *data, int argc, char **argv,
+                                char **azColName);
 
   private:
     sqlite3 *m_Database;

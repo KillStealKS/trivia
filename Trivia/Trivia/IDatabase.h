@@ -54,7 +54,7 @@ class IDatabase {
     virtual int getNumOfTotalAnswers(std::string username) = 0;
     virtual int getNumOfPlayerGames(std::string username) = 0;
     virtual std::vector<std::string> getHighscores(int num) = 0;
-    
-    //Question methods
+
+    // Question methods
     virtual std::vector<Question> getQuestions(int amount) = 0;
 };

@@ -15,7 +15,13 @@ Room::Room(LoggedUser user, RoomData metadata) : m_metadata(metadata) {
  *
  * @param user User to add.
  */
-void Room::addUser(LoggedUser user) { m_users.push_back(user); }
+void Room::addUser(LoggedUser user) {
+    for (auto i : m_users) {
+        if (i.getUsername() == user.getUsername())
+            throw std::exception(__FUNCTION__ " - user already connected.");
+    }
+    m_users.push_back(user);
+}
 
 /**
  * @brief Removes a user from the room.

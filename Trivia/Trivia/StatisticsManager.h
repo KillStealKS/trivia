@@ -8,8 +8,12 @@ class StatisticsManager {
     IDatabase *m_database;
 
   public:
+    StatisticsManager(IDatabase *database);
+
     std::vector<std::string> getHighScore(int amount);
     Statistics getUserStatistics(std::string username);
+
+    std::mutex *m_databaseMutex;
 };
 
 #endif // !STATISTICSMANAGER_H_

@@ -43,7 +43,7 @@ void LoginManager::signup(std::string username, std::string password,
 /*
  * @brief logs in a user
  */
-void LoginManager::login(std::string username, std::string password) {
+LoggedUser LoginManager::login(std::string username, std::string password) {
     if (!m_database->doesUserExist(username))
         throw std::exception(__FUNCTION__ " - username not found.");
 
@@ -53,8 +53,10 @@ void LoginManager::login(std::string username, std::string password) {
     }
 
     if (m_database->doesPasswordMatch(username, password)) {
+        LoggedUser user(username);
         std::lock_guard<std::mutex> usersLock(*m_usersMutex);
-        m_loggedUsers.push_back(LoggedUser(username));
+        m_loggedUsers.push_back(user);
+        return user;
     } else
         throw std::exception(__FUNCTION__ " - wrong password.");
 }

@@ -46,3 +46,11 @@ std::vector<RoomData> RoomManager::getRooms() {
 
     return data;
 }
+
+Room RoomManager::getRoom(int roomID) {
+    for (auto i : m_rooms) {
+        if (i.first == roomID)
+            return i.second;
+    }
+    throw std::exception(__FUNCTION__ " - roomID not found.");
+}

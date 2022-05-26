@@ -6,9 +6,13 @@
 enum requestCodes {
     RQ_LOGIN = 1,
     RQ_SIGNUP,
+    RQ_LOGOUT,
     RQ_GETPLAYERS,
+    RQ_GETROOM,
     RQ_JOINROOM,
-    RQ_CREATEROOM
+    RQ_CREATEROOM,
+    RQ_PERSONALSTATS,
+    RQ_HIGHSCORE
 };
 
 typedef struct LoginRequest {
