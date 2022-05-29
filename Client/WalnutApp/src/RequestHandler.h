@@ -27,6 +27,10 @@ class RequestHandler {
                                                 unsigned int answerTimeout);
     static GetPersonalStatsResponse getPersonalStatsRequest();
     static GetHighScoreResponse getHighscoreRequest();
+    static CloseRoomResponse closeRoomRequest();
+    static StartGameResponse startGameRequest();
+    static GetRoomStateResponse getRoomStateRequest();
+    static LeaveRoomResponse leaveRoomRequest();
 };
 
 #endif // !REQUESTHANDLER_H_
