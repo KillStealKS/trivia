@@ -204,27 +204,6 @@ RequestHandler::createRoomRequest(std::string roomName, unsigned int maxUsers,
 }
 
 /**
- * @brief Handle getHighScore request.
- *
- * @return GetHighScoreResponse Response.
- */
-GetHighScoreResponse RequestHandler::getHighscoreRequest() {
-    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_HIGHSCORE};
-    std::vector<unsigned char> serializedResponse =
-        Communicator::communicator.sendRequest(serializedRequest);
-
-    if (serializedResponse[0] == RS_ERROR) {
-        ErrorResponse response =
-            Deserializer::deserializeErrorResponse(serializedResponse);
-        throw std::exception(response.message.c_str());
-    } else {
-        GetHighScoreResponse response =
-            Deserializer::deserializeGetHishscoreResponse(serializedResponse);
-        return response;
-    }
-}
-
-/**
  * @brief Handles getPersonalStats request.
  *
  * @return GetPersonalStatsResponse Response.
@@ -245,3 +224,109 @@ GetPersonalStatsResponse RequestHandler::getPersonalStatsRequest() {
         return response;
     }
 }
+
+/**
+ * @brief Handle getHighScore request.
+ *
+ * @return GetHighScoreResponse Response.
+ */
+GetHighScoreResponse RequestHandler::getHighscoreRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_HIGHSCORE};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        GetHighScoreResponse response =
+            Deserializer::deserializeGetHighscoreResponse(serializedResponse);
+        return response;
+    }
+}
+
+/**
+ * @brief Handle closeRoom request.
+ *
+ * @return CloseRoomResponse Response.
+ */
+CloseRoomResponse RequestHandler::closeRoomRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_CLOSEROOM};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        CloseRoomResponse response =
+            Deserializer::deserializeCloseRoomResponse(serializedResponse);
+        return response;
+    }
+}
+
+/**
+ * @brief Handle startGame request.
+ *
+ * @return StartGameResponse Response.
+ */
+StartGameResponse RequestHandler::startGameRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_STARTGAME};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        StartGameResponse response =
+            Deserializer::deserializeStartGameResponse(serializedResponse);
+        return response;
+    }
+}
+
+/**
+ * @brief Handle getRoomState request.
+ *
+ * @return GetRoomStateResponse Response.
+ */
+GetRoomStateResponse RequestHandler::getRoomStateRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_GETROOMSTATE};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        GetRoomStateResponse response =
+            Deserializer::deserializeGetRoomStateResponse(serializedResponse);
+        return response;
+    }
+}
+
+/**
+ * @brief Handle leaveRoom request.
+ *
+ * @return LeaveRoomResponse Response.
+ */
+LeaveRoomResponse RequestHandler::leaveRoomRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_HIGHSCORE};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        LeaveRoomResponse response =
+            Deserializer::deserializeLeaveRoomResponse(serializedResponse);
+        return response;
+    }
+}
+
