@@ -28,20 +28,31 @@ def main():
     sock.connect(server_address)
 
     while True:
-        print("Welcome to the Magshimim Trivia Game!\n" "1. Signup\n" "2. Login\n")
-        is_signup = True if int(input("Choose an option: ")) == 1 else False
+        print(
+            "Welcome to the Magshimim Trivia Game!\n"
+            "1. Signup\n"
+            "2. Login\n"
+            "3. Signout\n"
+            "4. Get players in room\n"
+            "5. Get rooms\n"
+            "6. Join room\n"
+            "7. Create room\n"
+            "8. Get personal stats\n"
+            "9. Get highscore\n"
+        )
+        choice = int(input("Choose an option: "))
 
-        username = get_input("username")
-        password = hashlib.sha256(
-            get_input(
-                "password",
-                "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$",
-            ).encode()
-        ).hexdigest()
+        if choice == 1:
+            username = get_input("username")
+            password = hashlib.sha256(
+                get_input(
+                    "password",
+                    "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$",
+                ).encode()
+            ).hexdigest()
 
-        if is_signup:
             email = get_input("email", "^\S+@\S+$")
-            addr = get_input("addres", "^\([A-z]+, \d+, [A-z]+\)$")
+            addr = get_input("address", "^[A-z]+, \d+, [A-z]+$")
             phone = get_input("phone number", "^0\d{1,2}\d{7}$")
             date = get_input(
                 "birth date", "^((\d{2}\/\d{2}\/\d{4})|(\d{2}\.\d{2}\.\d{4}))$"
@@ -55,25 +66,61 @@ def main():
                 "date": date,
             }
             code = SIGNUP_CODE
-        else:
+        elif choice == 2:
+            username = get_input("username")
+            password = hashlib.sha256(
+                get_input(
+                    "password",
+                    "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$",
+                ).encode()
+            ).hexdigest()
+
             content = {"username": username, "password": password}
             code = LOGIN_CODE
+        elif choice == 3:
+            content = ""
+            code = 3
+        elif choice == 4:
+            room_id = int(input("Room ID: "))
+
+            content = {"roomId": room_id}
+            code = 4
+        elif choice == 5:
+            content = ""
+            code = 5
+        elif choice == 6:
+            room_id = int(input("Room ID: "))
+
+            content = {"roomId": room_id}
+
+            code = 6
+        elif choice == 7:
+            content["roomName"] = input("Room name: ")
+            content["maxUsers"] = int(input("maxUsers: "))
+            content["questionCount"] = int(input("questionCount: "))
+            content["answerTimeout"] = int(input("answerTimeout: "))
+            
+            code = 7    
+
+        elif choice == 8:
+            content = ""
+            code = 8
+        elif choice == 9:
+            content = ""
+            code = 9
 
         content = ubjson.dumpb(content)
-        coontent_len = len(content).to_bytes(4, byteorder="big")
+        content_len = len(content).to_bytes(4, byteorder="big")
         code = code.to_bytes(1, byteorder="big")
 
-        msg = code + coontent_len + content
+        msg = code + content_len + content
         sock.sendall(msg)
-
-        if msg == "QUIT":
-            break
 
         server_msg = sock.recv(1024)
         code = server_msg[0]
-        coontent_len = int.from_bytes(server_msg[1:5], byteorder="little")
+        content_len = int.from_bytes(server_msg[1:5], byteorder="little")
         content = ubjson.loadb(server_msg[5:])
-        print(code, coontent_len, content)
+        print(code, content_len, content)
 
     sock.close()
 
