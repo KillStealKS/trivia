@@ -318,7 +318,7 @@ GetPersonalStatsResponse Deserializer::deserializePersonalStatsResponse(
  * @param buffer Serialized response.
  * @return GetHighScoreResponse Deserialized response
  */
-GetHighScoreResponse Deserializer::deserializeGetHishscoreResponse(
+GetHighScoreResponse Deserializer::deserializeGetHighscoreResponse(
     std::vector<unsigned char> buffer) {
     GetHighScoreResponse newGetHighscoreResponse;
 
@@ -345,4 +345,137 @@ GetHighScoreResponse Deserializer::deserializeGetHishscoreResponse(
     }
 
     return newGetHighscoreResponse;
+}
+
+/**
+ * @brief Deserialize closeRoom response.
+ *
+ * @param buffer Serialized response.
+ * @return CloseRoomResponse Deserialized response
+ */
+CloseRoomResponse
+Deserializer::deserializeCloseRoomResponse(std::vector<unsigned char> buffer) {
+    CloseRoomResponse newCloseRoomResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newCloseRoomResponse.status = msg["status"];
+
+    return newCloseRoomResponse;
+}
+
+/**
+ * @brief Deserialize startGame response.
+ *
+ * @param buffer Serialized response.
+ * @return StartGameResponse Deserialized response
+ */
+StartGameResponse
+Deserializer::deserializeStartGameResponse(std::vector<unsigned char> buffer) {
+    StartGameResponse newStartGameResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newStartGameResponse.status = msg["status"];
+
+    return newStartGameResponse;
+}
+
+/**
+ * @brief Deserialize getRoomState response.
+ *
+ * @param buffer Serialized response.
+ * @return GetRoomStateResponse Deserialized response
+ */
+GetRoomStateResponse Deserializer::deserializeGetRoomStateResponse(
+    std::vector<unsigned char> buffer) {
+    GetRoomStateResponse newGetRoomStateResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newGetRoomStateResponse.status = msg["status"];
+    newGetRoomStateResponse.hasGameBegun = msg["hasGameBegun"];
+    for (auto i : msg["players"])
+        newGetRoomStateResponse.players.push_back(i);
+    newGetRoomStateResponse.questionCount = msg["questionCount"];
+    newGetRoomStateResponse.answerTimeout = msg["answerTimeout"];
+
+    return newGetRoomStateResponse;
+}
+
+/**
+ * @brief Deserialize leaveRoom response.
+ *
+ * @param buffer Serialized response.
+ * @return LeaveRoomResponse Deserialized response
+ */
+LeaveRoomResponse
+Deserializer::deserializeLeaveRoomResponse(std::vector<unsigned char> buffer) {
+    LeaveRoomResponse newLeaveRoomResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newLeaveRoomResponse.status = msg["status"];
+
+    return newLeaveRoomResponse;
 }

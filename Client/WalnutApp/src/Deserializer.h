@@ -27,7 +27,15 @@ class Deserializer {
     static GetPersonalStatsResponse
     deserializePersonalStatsResponse(std::vector<unsigned char> buffer);
     static GetHighScoreResponse
-    deserializeGetHishscoreResponse(std::vector<unsigned char> buffer);
+    deserializeGetHighscoreResponse(std::vector<unsigned char> buffer);
+    static CloseRoomResponse
+    deserializeCloseRoomResponse(std::vector<unsigned char> buffer);
+    static StartGameResponse
+    deserializeStartGameResponse(std::vector<unsigned char> buffer);
+    static GetRoomStateResponse
+    deserializeGetRoomStateResponse(std::vector<unsigned char> buffer);
+    static LeaveRoomResponse
+    deserializeLeaveRoomResponse(std::vector<unsigned char> buffer);
 };
 
 #endif // !DESIRIALIZER_H_

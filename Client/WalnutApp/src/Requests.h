@@ -12,7 +12,11 @@ enum requestCodes {
     RQ_JOINROOM,
     RQ_CREATEROOM,
     RQ_PERSONALSTATS,
-    RQ_HIGHSCORE
+    RQ_HIGHSCORE,
+    RQ_CLOSEROOM,
+    RQ_STARTGAME,
+    RQ_GETROOMSTATE,
+    RQ_LEAVEROOM,
 };
 
 typedef struct LoginRequest {

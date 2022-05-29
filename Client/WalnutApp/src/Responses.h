@@ -33,7 +33,11 @@ enum responseCodes {
     RS_JOINROOM,
     RS_CREATEROOM,
     RS_PERSONALSTATS,
-    RS_HIGHSCORE
+    RS_HIGHSCORE,
+    RS_CLOSEROOM,
+    RS_STARTGAME,
+    RS_GETROOMSTATE,
+    RS_LEAVEROOM,
 };
 
 typedef struct ErrorResponse {
@@ -69,14 +73,34 @@ typedef struct CreateRoomResponse {
     unsigned int status;
 } CreateRoomResponse;
 
+typedef struct GetPersonalStatsResponse {
+    unsigned int status;
+    Statistics statistics;
+} GetPersonalStatsResponse;
+
 typedef struct GetHighScoreResponse {
     unsigned int status;
     std::vector<std::string> statistics;
 } GetHighScoreResponse;
 
-typedef struct GetPersonalStatsResponse {
+typedef struct CloseRoomResponse {
     unsigned int status;
-    Statistics statistics;
-} GetPersonalStatsResponse;
+} CloseRoomResponse;
+
+typedef struct StartGameResponse {
+    unsigned int status;
+};
+
+typedef struct GetRoomStateResponse {
+    unsigned int status;
+    bool hasGameBegun;
+    std::vector<std::string> players;
+    unsigned int questionCount;
+    unsigned int answerTimeout;
+} GetRoomStateResponse;
+
+typedef struct LeaveRoomResponse {
+    unsigned int status;
+};
 
 #endif // !RESPONSES_H_
