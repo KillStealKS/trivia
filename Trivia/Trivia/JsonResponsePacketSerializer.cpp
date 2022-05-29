@@ -132,7 +132,7 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
     json responseJson = json::object();
     responseJson["status"] = getRoomResponse.status;
     responseJson["rooms"] = json::array();
-    
+
     for (auto r : getRoomResponse.rooms) {
         json roomJson = json::object();
         roomJson["roomID"] = r.id;
@@ -141,7 +141,7 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
         roomJson["numOfQuestions"] = r.numOfQuestions;
         roomJson["timePerQuestion"] = r.timePerQuestion;
         roomJson["isActive"] = r.isActive;
-        
+
         responseJson["rooms"].insert(responseJson["rooms"].end(), roomJson);
     }
 
@@ -295,6 +295,12 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
     return buffer;
 }
 
+/**
+ * @brief Serializes getHighscore respone.
+ *
+ * @param getHighscoreResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
     GetHighScoreResponse getHighscoreResponse) {
     std::vector<unsigned char> buffer;
@@ -304,6 +310,130 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
 
     // Code
     buffer.push_back((unsigned char)RS_HIGHSCORE);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+/**
+ * @brief Serializes closeRoom respone.
+ *
+ * @param closeRoomResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    CloseRoomResponse closeRoomResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = closeRoomResponse.status;
+
+    // Code
+    buffer.push_back((unsigned char)RS_CLOSEROOM);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+/**
+ * @brief Serializes startGame respone.
+ *
+ * @param startGameResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    StartGameResponse startGameResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = startGameResponse.status;
+
+    // Code
+    buffer.push_back((unsigned char)RS_STARTGAME);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+/**
+ * @brief Serializes getRoomState respone.
+ *
+ * @param getRoomStateResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    GetRoomStateResponse getRoomStateResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = getRoomStateResponse.status;
+    responseJson["hasGameBegun"] = getRoomStateResponse.hasGameBegun;
+    responseJson["players"] = getRoomStateResponse.players;
+    responseJson["questionCount"] = getRoomStateResponse.questionCount;
+    responseJson["answerTimeout"] = getRoomStateResponse.answerTimeout;
+
+    // Code
+    buffer.push_back((unsigned char)RS_GETROOMSTATE);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+/**
+ * @brief Serializes leaveRoom respone.
+ *
+ * @param leaveRoomResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    LeaveRoomResponse leaveRoomResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = leaveRoomResponse.status;
+
+    // Code
+    buffer.push_back((unsigned char)RS_LEAVEROOM);
 
     // Length
     unsigned char len[4];
