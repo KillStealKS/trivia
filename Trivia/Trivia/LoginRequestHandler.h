@@ -9,7 +9,8 @@ class RequestHandlerFactory;
 
 class LoginRequestHandler : public IRequestHandler {
   public:
-    LoginRequestHandler(RequestHandlerFactory *factory, LoginManager *manager);
+    LoginRequestHandler(RequestHandlerFactory *factory,
+                        LoginManager *loginManager);
     bool isRequestRelevant(RequestInfo RI) override;
     RequestResult handleRequest(RequestInfo RI) override;
 

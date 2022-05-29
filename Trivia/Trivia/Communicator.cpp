@@ -98,17 +98,23 @@ void Communicator::handleNewClient(SOCKET clientSocket) {
         else { // Request received successfully.
             for (int i = 0; i < result; i++)
                 request.push_back(buffer[i]);
-
+            
             // Process request.
             RequestInfo reqInf = {m_idCounter++,
                                   system_clock::to_time_t(system_clock::now()),
                                   request};
+            
+            std::cout << "Processing request number " + std::to_string(reqInf.requestID) 
+                + ", code: " + std::to_string(request[0]) << std::endl;
+            
             RequestResult reqRes =
                 m_clients[clientSocket]->handleRequest(reqInf);
 
             // Create new request handler for socket.
-            delete m_clients[clientSocket];
-            m_clients[clientSocket] = reqRes.newHandler;
+            if (reqRes.newHandler != nullptr) {
+                delete m_clients[clientSocket];
+                m_clients[clientSocket] = reqRes.newHandler;
+            }
 
             // Send response to client.
             for (int i = 0; i < reqRes.response.size(); i++)
