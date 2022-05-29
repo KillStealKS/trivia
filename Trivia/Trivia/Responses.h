@@ -7,7 +7,7 @@
 #include <vector>
 
 enum responseCodes {
-    RS_ERROR = -1,
+    RS_ERROR = 255,
     RS_LOGIN = 1,
     RS_SIGNUP,
     RS_LOGOUT,
