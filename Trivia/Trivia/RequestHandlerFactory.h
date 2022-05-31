@@ -5,11 +5,14 @@
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
 #include "RoomManager.h"
+#include "RoomRequestHandlers.h"
 #include "StatisticsManager.h"
 #include <mutex>
 
 class LoginRequestHandler;
 class MenuRequestHandler;
+class RoomAdminRequestHandler;
+class RoomMemberRequestHandler;
 
 class RequestHandlerFactory {
   public:
@@ -22,6 +25,10 @@ class RequestHandlerFactory {
 
     LoginRequestHandler *createLoginRequestHandler();
     MenuRequestHandler *createMenuRequestHandler(LoggedUser user);
+    RoomAdminRequestHandler *createRoomAdminRequestHandler(Room room,
+                                                           LoggedUser user);
+    RoomMemberRequestHandler *createRoomMemberRequestHandler(Room room,
+                                                             LoggedUser user);
 
   private:
     IDatabase *m_database;

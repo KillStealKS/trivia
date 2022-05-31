@@ -181,12 +181,18 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo reqInf) {
         JsonResponsePacketDeserializer::deserializeJoinRoomRequest(
             reqInf.buffer);
 
-    m_roomManager.getRoom(joinRoomReq.roomId).addUser(m_user);
+    Room room = m_roomManager.getRoom(joinRoomReq.roomId);
+
+    if (room.getMetadata().maxPlayers == room.getAllUsers().size())
+        throw std::exception("Room is full.");
+
+    room.addUser(m_user);
 
     JoinRoomResponse joinRoomRes = {1};
 
     RequestResult reqRes = {
-        JsonResponsePacketSerializer::serializeResponse(joinRoomRes), nullptr};
+        JsonResponsePacketSerializer::serializeResponse(joinRoomRes), 
+        m_handlerFactory.createRoomMemberRequestHandler(room, m_user)};
     return reqRes;
 }
 
@@ -210,6 +216,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo reqInf) {
 
     RequestResult reqRes = {
         JsonResponsePacketSerializer::serializeResponse(createRoomRes),
-        nullptr};
+        m_handlerFactory.createRoomAdminRequestHandler(
+            m_roomManager.getRoom(roomData.id), m_user)};
     return reqRes;
 }

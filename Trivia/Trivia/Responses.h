@@ -72,7 +72,7 @@ typedef struct CloseRoomResponse {
 
 typedef struct StartGameResponse {
     unsigned int status;
-};
+} StartGameResponse;
 
 typedef struct GetRoomStateResponse {
     unsigned int status;
@@ -84,6 +84,6 @@ typedef struct GetRoomStateResponse {
 
 typedef struct LeaveRoomResponse {
     unsigned int status;
-};
+} LeaveRoomResponse;
 
 #endif // !RESPONSES_H_
