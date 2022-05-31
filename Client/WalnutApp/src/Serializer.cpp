@@ -158,3 +158,33 @@ Serializer::serializeRequest(CreateRoomRequest createRoomRequest) {
 
     return buffer;
 }
+
+/**
+ * @brief Serializes submitAnswer request.
+ *
+ * @param submitAnswerRequest Request.
+ * @return std::vector<unsigned char> Serialized request.
+ */
+std::vector<unsigned char>
+Serializer::serializeRequest(SubmitAnswerRequest submitAnswerRequest) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["answerId"] = submitAnswerRequest.answerId;
+
+    // Code
+    buffer.push_back((unsigned char)RQ_SUBMITANSWER);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char)) {
+        buffer.push_back(len[i]);
+    }
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}

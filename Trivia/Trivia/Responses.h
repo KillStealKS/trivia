@@ -21,69 +21,100 @@ enum responseCodes {
     RS_STARTGAME,
     RS_GETROOMSTATE,
     RS_LEAVEROOM,
+    RS_LEAVEGAME,
+    RS_GETQUESTION,
+    RS_SUBMITANSWER,
+    RS_GETGAMERESULTS,
 };
 
-typedef struct ErrorResponse {
+struct PlayerResults {
+    std::string username;
+    unsigned int correctAnswerCount;
+    unsigned int wrongAnswerCount;
+    unsigned int averageAnswerTime;
+};
+
+struct ErrorResponse {
     std::string message;
-} ErrorResponse;
+};
 
-typedef struct LoginResponse {
+struct LoginResponse {
     unsigned int status;
-} LoginResponse;
+};
 
-typedef struct SignupResponse {
+struct SignupResponse {
     unsigned int status;
-} SignupResponse;
+};
 
-typedef struct LogoutResponse {
+struct LogoutResponse {
     unsigned int status;
-} LogoutResponse;
+};
 
-typedef struct GetPlayersInRoomResponse {
+struct GetPlayersInRoomResponse {
     std::vector<std::string> players;
-} GetPlayersInRoomResponse;
+};
 
-typedef struct JoinRoomResponse {
+struct JoinRoomResponse {
     unsigned int status;
-} JoinRoomResponse;
+};
 
-typedef struct CreateRoomResponse {
+struct CreateRoomResponse {
     unsigned int status;
-} CreateRoomResponse;
+};
 
-typedef struct GetRoomsResponse {
+struct GetRoomsResponse {
     unsigned int status;
     std::vector<RoomData> rooms;
-} GetRoomsResponse;
+};
 
-typedef struct GetPersonalStatsResponse {
+struct GetPersonalStatsResponse {
     unsigned int status;
     Statistics statistics;
-} GetPersonalStatsResponse;
+};
 
-typedef struct GetHighScoreResponse {
+struct GetHighScoreResponse {
     unsigned int status;
     std::vector<std::string> statistics;
-} GetHighScoreResponse;
+};
 
-typedef struct CloseRoomResponse {
-    unsigned int status;
-} CloseRoomResponse;
-
-typedef struct StartGameResponse {
+struct CloseRoomResponse {
     unsigned int status;
 } StartGameResponse;
 
-typedef struct GetRoomStateResponse {
+struct StartGameResponse {
+    unsigned int status;
+};
+
+struct GetRoomStateResponse {
     unsigned int status;
     bool hasGameBegun;
     std::vector<std::string> players;
     unsigned int questionCount;
     unsigned int answerTimeout;
-} GetRoomStateResponse;
+};
 
-typedef struct LeaveRoomResponse {
+struct LeaveRoomResponse {
     unsigned int status;
 } LeaveRoomResponse;
+
+struct LeaveGameResponse {
+    unsigned int status;
+};
+
+struct GetQuestionResponse {
+    unsigned int status;
+    std::string question;
+    std::map<unsigned int, std::string> answers;
+};
+
+struct SubmitAnswerResponse {
+    unsigned int status;
+    unsigned int correctAnswer;
+};
+
+struct GetGameResultsResponse {
+    unsigned int status;
+    std::vector<PlayerResults> results;
+};
 
 #endif // !RESPONSES_H_

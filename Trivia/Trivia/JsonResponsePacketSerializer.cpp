@@ -449,3 +449,137 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
 
     return buffer;
 }
+
+/**
+ * @brief Serializes leaveGame respone.
+ *
+ * @param leaveGameResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    LeaveGameResponse leaveGameResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = leaveGameResponse.status;
+
+    // Code
+    buffer.push_back((unsigned char)RS_LEAVEGAME);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+/**
+ * @brief Serializes getQuestion respone.
+ *
+ * @param getQuestionResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    GetQuestionResponse getQuestionResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = getQuestionResponse.status;
+    responseJson["question"] = getQuestionResponse.question;
+    responseJson["answers"] = getQuestionResponse.answers;
+
+    // Code
+    buffer.push_back((unsigned char)RS_GETQUESTION);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+/**
+ * @brief Serializes submitAnswer respone.
+ *
+ * @param submitAnswerResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    SubmitAnswerResponse submitAnswerResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = submitAnswerResponse.status;
+    responseJson["correctAnswer"] = submitAnswerResponse.correctAnswer;
+
+    // Code
+    buffer.push_back((unsigned char)RS_SUBMITANSWER);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}
+
+/**
+ * @brief Serializes getGameResults respone.
+ *
+ * @param getGameResultsResponse Response to serialize.
+ * @return std::vector<unsigned char> Serialized response.
+ */
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
+    GetGameResultsResponse getGameResultsResponse) {
+    std::vector<unsigned char> buffer;
+    json responseJson = json::object();
+    responseJson["status"] = getGameResultsResponse.status;
+    responseJson["results"] = json::array();
+    for (auto i : getGameResultsResponse.results) {
+        json resultJson = json::object();
+        resultJson["username"] = i.username;
+        resultJson["correctAnswerCount"] = i.correctAnswerCount;
+        resultJson["wrongAnswerCount"] = i.wrongAnswerCount;
+        resultJson["averageAnswerTime"] = i.averageAnswerTime;
+
+        responseJson["results"].insert(responseJson["results"].end(),
+                                       resultJson);
+    }
+
+    // Code
+    buffer.push_back((unsigned char)RS_GETGAMERESULTS);
+
+    // Length
+    unsigned char len[4];
+    long int intLen = sizeof(responseJson);
+
+    memcpy(len, &intLen, sizeof(intLen));
+    for (int i = 0; i < 4; i += sizeof(unsigned char))
+        buffer.push_back(len[i]);
+
+    // Message
+    std::vector<unsigned char> msg = json::to_ubjson(responseJson);
+    buffer.insert(buffer.end(), msg.begin(), msg.end());
+
+    return buffer;
+}

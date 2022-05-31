@@ -27,6 +27,10 @@ class JsonResponsePacketSerializer {
     static std::vector<unsigned char>
     serializeResponse(GetRoomStateResponse grs);
     static std::vector<unsigned char> serializeResponse(LeaveRoomResponse lr);
+    static std::vector<unsigned char> serializeResponse(LeaveGameResponse lg);
+    static std::vector<unsigned char> serializeResponse(GetQuestionResponse gq);
+    static std::vector<unsigned char> serializeResponse(SubmitAnswerResponse sa);
+    static std::vector<unsigned char> serializeResponse(GetGameResultsResponse gr);
 
   private:
 };

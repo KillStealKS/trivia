@@ -17,35 +17,43 @@ enum requestCodes {
     RQ_STARTGAME,
     RQ_GETROOMSTATE,
     RQ_LEAVEROOM,
+    RQ_LEAVEGAME,
+    RQ_GETQUESTION,
+    RQ_SUBMITANSWER,
+    RQ_GETGAMERESULTS,
 };
 
-typedef struct LoginRequest {
+struct LoginRequest {
     std::string username;
     std::string password;
-} LoginRequest;
+};
 
-typedef struct SignupRequest {
+struct SignupRequest {
     std::string username;
     std::string password;
     std::string email;
     std::string addr;
     std::string phone;
     std::string date;
-} SignupRequest;
+};
 
-typedef struct GetPlayersInRoomRequest {
+struct GetPlayersInRoomRequest {
     unsigned int roomId;
-} GetPlayersInRoomRequest;
+};
 
-typedef struct JoinRoomRequest {
+struct JoinRoomRequest {
     unsigned int roomId;
-} JoinRoomRequest;
+};
 
-typedef struct CreateRoomRequest {
+struct CreateRoomRequest {
     std::string roomName;
     unsigned int maxUsers;
     unsigned int questionCount;
     unsigned int answerTimeout;
-} CreateRoomRequest;
+};
+
+struct SubmitAnswerRequest {
+    unsigned int answerId;
+};
 
 #endif // !REQUESTS_H_

@@ -169,3 +169,36 @@ CreateRoomRequest JsonResponsePacketDeserializer::deserializeCreateRoomRequest(
 
     return newCreateRoomRequest;
 }
+
+/**
+ * @brief Deserializes submitAnswer request.
+ *
+ * @param buffer Serialized request.
+ * @return SubmitAnswerRequest Deserialized request.
+ */
+SubmitAnswerRequest
+JsonResponsePacketDeserializer::deserializeSubmitAnswerRequest(
+    std::vector<unsigned char> buffer) {
+    SubmitAnswerRequest newSubmitAnswerRequest;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newSubmitAnswerRequest.answerId = msg["answerId"];
+
+    return newSubmitAnswerRequest;
+}
