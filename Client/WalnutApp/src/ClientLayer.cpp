@@ -195,7 +195,12 @@ void ClientLayer::renderMenu() {
         m_screen = Screens::JoinRoom;
     if (ImGui::Button("Statistics"))
         m_screen = Screens::PersonalStats;
+    if (ImGui::Button("Logout")) {
+        RequestHandler::logoutRequest();
+        m_screen = Screens::Login;
+    }
     if (ImGui::Button("Exit")) {
+        RequestHandler::logoutRequest();
         m_app->Close();
     }
 }
@@ -231,7 +236,7 @@ void ClientLayer::renderCreateRoom() {
  * @brief Renders joinRoom screen.
  */
 void ClientLayer::renderJoinRoom() {
-    GetRoomsResponse rooms;
+    static GetRoomsResponse rooms;
     static float getRoomsCounter = 0;
     if (count(&getRoomsCounter))
         rooms = RequestHandler::getRoomsRequest();
