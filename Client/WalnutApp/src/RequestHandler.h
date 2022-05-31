@@ -31,6 +31,10 @@ class RequestHandler {
     static StartGameResponse startGameRequest();
     static GetRoomStateResponse getRoomStateRequest();
     static LeaveRoomResponse leaveRoomRequest();
+    static LeaveGameResponse leaveGameRequest();
+    static GetQuestionResponse getQuestionRequest();
+    static SubmitAnswerResponse submitAnswerRequest(unsigned int answerId);
+    static GetGameResultsResponse getGameResultsRequest();
 };
 
 #endif // !REQUESTHANDLER_H_

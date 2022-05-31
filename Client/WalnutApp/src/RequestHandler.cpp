@@ -56,7 +56,8 @@ RequestHandler::signupRequest(std::string username, std::string password,
         throw std::exception("Invalid phone");
     if (!std::regex_match(
             date,
-            std::regex("^((\\d{2}\\/\\d{2}\\/\\d{4})|(\\d{2}\\.\\d{2}\\.\\d{4}))$")))
+            std::regex(
+                "^((\\d{2}\\/\\d{2}\\/\\d{4})|(\\d{2}\\.\\d{2}\\.\\d{4}))$")))
         throw std::exception("Invalid date");
 
     SignupRequest request = {username, password, email, addr, phone, date};
@@ -294,7 +295,8 @@ StartGameResponse RequestHandler::startGameRequest() {
  * @return GetRoomStateResponse Response.
  */
 GetRoomStateResponse RequestHandler::getRoomStateRequest() {
-    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_GETROOMSTATE};
+    std::vector<unsigned char> serializedRequest{
+        (unsigned char)RQ_GETROOMSTATE};
     std::vector<unsigned char> serializedResponse =
         Communicator::communicator.sendRequest(serializedRequest);
 
@@ -330,3 +332,89 @@ LeaveRoomResponse RequestHandler::leaveRoomRequest() {
     }
 }
 
+/**
+ * @brief Handle leaveGame request.
+ *
+ * @return LeaveGameResponse Response.
+ */
+LeaveGameResponse RequestHandler::leaveGameRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_LEAVEGAME};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        LeaveGameResponse response =
+            Deserializer::deserializeLeaveGameResponse(serializedResponse);
+        return response;
+    }
+}
+
+/**
+ * @brief Handle getQuestion request.
+ *
+ * @return GetQuestionResponse Response.
+ */
+GetQuestionResponse RequestHandler::getQuestionRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_GETQUESTION};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        GetQuestionResponse response =
+            Deserializer::deserializeGetQuestionResponse(serializedResponse);
+        return response;
+    }
+}
+
+/**
+ * @brief Handle submitAnswer request.
+ *
+ * @return SubmitAnswerResponse Response.
+ */
+SubmitAnswerResponse
+RequestHandler::submitAnswerRequest(unsigned int answerId) {
+    SubmitAnswerRequest request = {answerId};
+    std::vector<unsigned char> serializedRequest =
+        Serializer::serializeRequest(request);
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        SubmitAnswerResponse response =
+            Deserializer::deserializeSubmitAnswerResponse(serializedResponse);
+        return response;
+    }
+}
+
+/**
+ * @brief Handle getRoomResults request.
+ *
+ * @return GetRoomResultsResponse Response.
+ */
+GetGameResultsResponse RequestHandler::getGameResultsRequest() {
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_GETGAMERESULTS};
+    std::vector<unsigned char> serializedResponse =
+        Communicator::communicator.sendRequest(serializedRequest);
+
+    if (serializedResponse[0] == RS_ERROR) {
+        ErrorResponse response =
+            Deserializer::deserializeErrorResponse(serializedResponse);
+        throw std::exception(response.message.c_str());
+    } else {
+        GetGameResultsResponse response =
+            Deserializer::deserializeGetGameResultsResponse(serializedResponse);
+        return response;
+    }
+}
