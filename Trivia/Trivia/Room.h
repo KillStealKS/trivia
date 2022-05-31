@@ -27,6 +27,7 @@ class Room {
     std::vector<std::string> getAllUsers();
 
     RoomData getMetadata() { return m_metadata; }
+    void setIsActive(const unsigned int newVal);
 };
 
 #endif // !ROOM_H_

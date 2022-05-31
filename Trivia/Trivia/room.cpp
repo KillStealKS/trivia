@@ -51,3 +51,10 @@ std::vector<std::string> Room::getAllUsers() {
 
     return users;
 }
+
+/**
+ * @brief Sets isActive in the room metadata.
+ *
+ * @param newVal const unsigned int.
+ */
+void Room::setIsActive(const unsigned int newVal) { m_metadata.isActive = newVal; }

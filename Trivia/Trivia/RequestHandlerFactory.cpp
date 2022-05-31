@@ -24,3 +24,11 @@ RequestHandlerFactory::createMenuRequestHandler(LoggedUser user) {
     return new MenuRequestHandler(user, this, &m_roomManager,
                                   &m_statisticsManager);
 }
+
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room room, LoggedUser user) {
+    return new RoomAdminRequestHandler(room, user, this, &m_roomManager);
+}
+
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(Room room, LoggedUser user) {
+    return new RoomMemberRequestHandler(room, user, this, &m_roomManager);
+}
