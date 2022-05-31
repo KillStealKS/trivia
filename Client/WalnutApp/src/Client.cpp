@@ -2,8 +2,6 @@
 #include "Walnut/EntryPoint.h"
 
 Walnut::Application *Walnut::CreateApplication(int argc, char **argv) {
-    Communicator::communicator.startNewConnection();
-
     Walnut::ApplicationSpecification spec;
     spec.Name = "Trivia Client";
 

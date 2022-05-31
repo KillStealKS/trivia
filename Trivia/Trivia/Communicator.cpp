@@ -90,11 +90,17 @@ void Communicator::handleNewClient(SOCKET clientSocket) {
     while (true) {
         char buffer[1024];
         std::vector<unsigned char> request;
-
+        
         // Get request from client.
         int result = recv(clientSocket, buffer, 1024, 0);
-        if (result == INVALID_SOCKET)
+        if (result == SOCKET_ERROR)
             std::cout << std::to_string(WSAGetLastError());
+        else if (result == 0) { //socket closed
+            delete m_clients[clientSocket];
+            m_clients.erase(clientSocket);
+            closesocket(clientSocket);
+            break;
+        }
         else { // Request received successfully.
             for (int i = 0; i < result; i++)
                 request.push_back(buffer[i]);

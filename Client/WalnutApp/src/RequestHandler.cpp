@@ -315,7 +315,7 @@ GetRoomStateResponse RequestHandler::getRoomStateRequest() {
  * @return LeaveRoomResponse Response.
  */
 LeaveRoomResponse RequestHandler::leaveRoomRequest() {
-    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_HIGHSCORE};
+    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_LEAVEROOM};
     std::vector<unsigned char> serializedResponse =
         Communicator::communicator.sendRequest(serializedRequest);
 

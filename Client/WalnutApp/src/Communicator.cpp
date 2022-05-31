@@ -7,6 +7,13 @@ Communicator Communicator::communicator = Communicator();
  */
 Communicator::~Communicator() {
     try {
+        int iResult = shutdown(m_socket, SD_SEND);
+        if (iResult == SOCKET_ERROR) {
+            closesocket(m_socket);
+            WSACleanup();
+            throw std::exception(__FUNCTION__ " - shutdown failed: %d\n",
+                                 WSAGetLastError());
+        }
         closesocket(m_socket);
         WSACleanup();
     } catch (...) {
@@ -78,7 +85,7 @@ void Communicator::startNewConnection() {
 
 /**
  * @brief Sends a request to the server.
- * 
+ *
  * @param request Request to send.
  * @returns std::vector<unsigned char> Response.
  */
