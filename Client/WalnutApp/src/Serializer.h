@@ -15,6 +15,7 @@ class Serializer {
     serializeRequest(GetPlayersInRoomRequest gp);
     static std::vector<unsigned char> serializeRequest(JoinRoomRequest jr);
     static std::vector<unsigned char> serializeRequest(CreateRoomRequest cr);
+    static std::vector<unsigned char> serializeRequest(SubmitAnswerRequest sa);
 };
 
 #endif // !SERIALIZER_H_

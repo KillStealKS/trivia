@@ -479,3 +479,142 @@ Deserializer::deserializeLeaveRoomResponse(std::vector<unsigned char> buffer) {
 
     return newLeaveRoomResponse;
 }
+
+/**
+ * @brief Deserialize leaveGame response.
+ *
+ * @param buffer Serialized response.
+ * @return leaveGameResponse Deserialized response
+ */
+LeaveGameResponse
+Deserializer::deserializeLeaveGameResponse(std::vector<unsigned char> buffer) {
+    LeaveGameResponse newLeaveGameResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newLeaveGameResponse.status = msg["status"];
+
+    return newLeaveGameResponse;
+}
+
+/**
+ * @brief Deserialize getQuestion response.
+ *
+ * @param buffer Serialized response.
+ * @return getQuestionResponse Deserialized response
+ */
+GetQuestionResponse Deserializer::deserializeGetQuestionResponse(
+    std::vector<unsigned char> buffer) {
+    GetQuestionResponse newGetQuestionResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newGetQuestionResponse.status = msg["status"];
+    newGetQuestionResponse.question = msg["question"];
+    newGetQuestionResponse.answers = msg["answers"];
+
+    return newGetQuestionResponse;
+}
+
+/**
+ * @brief Deserialize submitAnswer response.
+ *
+ * @param buffer Serialized response.
+ * @return submitAnswerResponse Deserialized response
+ */
+SubmitAnswerResponse Deserializer::deserializeSubmitAnswerResponse(
+    std::vector<unsigned char> buffer) {
+    SubmitAnswerResponse newSubmitAnswerResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newSubmitAnswerResponse.status = msg["status"];
+
+    return newSubmitAnswerResponse;
+}
+
+/**
+ * @brief Deserialize getGameResults response.
+ *
+ * @param buffer Serialized response.
+ * @return getGameResultsResponse Deserialized response
+ */
+GetGameResultsResponse Deserializer::deserializeGetGameResultsResponse(
+    std::vector<unsigned char> buffer) {
+    GetGameResultsResponse newGetGameResultsResponse;
+
+    // code
+    int code = buffer.front();
+    buffer.erase(buffer.begin());
+
+    // length
+    unsigned char len[4];
+    for (int i = 0; i < 4; i++) {
+        len[i] = buffer.front();
+        buffer.erase(buffer.begin());
+    }
+
+    long int intLen;
+    memcpy(&intLen, len, sizeof(intLen));
+
+    // message
+    json msg = json::from_ubjson(buffer);
+
+    newGetGameResultsResponse.status = msg["status"];
+    for (auto i : msg["results"]) {
+        PlayerResults results;
+        results.username = i["username"];
+        results.correctAnswerCount = i["correctAnswerCount"];
+        results.wrongAnswerCount = i["wrongAnswerCount"];
+        results.averageAnswerTime = i["averageAnswerTime"];
+
+        newGetGameResultsResponse.results.push_back(results);
+    }
+
+    return newGetGameResultsResponse;
+}
