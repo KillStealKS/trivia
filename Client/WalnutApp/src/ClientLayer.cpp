@@ -208,14 +208,22 @@ void ClientLayer::renderLogin() {
 
     CenterItem(buttonWidth);
     if (ImGui::Button("Login", ImVec2(buttonWidth, 0.0f))) {
-        if (RequestHandler::loginRequest(username, password).status == RS_LOGIN)
-            m_screen = Screens::Menu;
+        RequestHandler::loginRequest(username, password).status;
+        m_screen = Screens::Menu;
     }
 
     CenterItem(buttonWidth);
     if (ImGui::Button("Signup", ImVec2(buttonWidth, 0.0f))) {
         m_screen = Screens::Signup;
-        return;
+    }
+
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Exit", ImVec2(buttonWidth, 0.0f)))
+        m_app->Close();
+
+    if (m_screen != Screens::Login) {
+        memset(username, 0, sizeof(username));
+        memset(password, 0, sizeof(password));
     }
 }
 
@@ -223,9 +231,15 @@ void ClientLayer::renderLogin() {
  * @brief Renders signup screen.
  */
 void ClientLayer::renderSignup() {
+    float inputWidth = ImGui::GetWindowSize().x / 3.0f;
+    ImGui::PushItemWidth(inputWidth);
+
+    CenterItem(inputWidth);
     static char username[128] = "";
     ImGui::InputTextWithHint("##username", "Username", username,
                              IM_ARRAYSIZE(username));
+
+    CenterItem(inputWidth);
     static char password[128] = "";
     ImGui::InputTextWithHint("##password", "Password", password,
                              IM_ARRAYSIZE(password));
@@ -233,29 +247,67 @@ void ClientLayer::renderSignup() {
     HelpMarker(
         "has to contain at least 1 lowercase letter, 1 uppercase letter, "
         "1 digit and 1 non-alphanumeric character");
+
+    CenterItem(inputWidth);
     static char email[128] = "";
     ImGui::InputTextWithHint("##email", "Email", email, IM_ARRAYSIZE(email));
-    static char address[128] = "";
-    ImGui::InputTextWithHint("##address", "Address", address,
-                             IM_ARRAYSIZE(address));
+
+    float addressWidth = inputWidth / 3.0f - 5.0f;
+    ImGui::PushItemWidth(addressWidth);
+    CenterItem(addressWidth + 5.0f, 3.0f / 8.0f);
+    static char city[128] = "";
+    ImGui::InputTextWithHint("##city", "City", city, IM_ARRAYSIZE(city));
+    ImGui::SameLine();
+    CenterItem(addressWidth);
+    static char number[128] = "";
+    ImGui::InputTextWithHint("##number", "Number", number,
+                             IM_ARRAYSIZE(number));
+    ImGui::SameLine();
+    CenterItem(addressWidth - 2.5f, 5.0f / 8.0f);
+    static char street[128] = "";
+    ImGui::InputTextWithHint("##street", "Street", street,
+                             IM_ARRAYSIZE(street));
+
+    std::string address = std::string(city) + ", " + std::string(number) +
+                          ", " + std::string(street);
+    ImGui::PopItemWidth();
+
+    CenterItem(inputWidth);
     static char phone[128] = "";
     ImGui::InputTextWithHint("##phone", "Phone", phone, IM_ARRAYSIZE(phone));
+
+    CenterItem(inputWidth);
     static char birthDate[128] = "";
     ImGui::InputTextWithHint("##birthDate", "Birth date", birthDate,
                              IM_ARRAYSIZE(birthDate));
     ImGui::SameLine();
     HelpMarker("either DD/MM/YYYY or DD.MM.YYYY");
 
-    if (ImGui::Button("Signup")) {
+    ImGui::PopItemWidth();
+
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Signup", ImVec2(buttonWidth, 0.0f))) {
         RequestHandler::signupRequest(username, password, email, address, phone,
                                       birthDate);
         RequestHandler::loginRequest(username, password);
         m_screen = Screens::Menu;
     }
 
-    if (ImGui::Button("Login")) {
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Login", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::Login;
-        return;
+
+    if (m_screen != Screens::Signup) {
+        memset(username, 0, sizeof(username));
+        memset(password, 0, sizeof(password));
+        memset(email, 0, sizeof(email));
+        memset(city, 0, sizeof(city));
+        memset(number, 0, sizeof(number));
+        memset(street, 0, sizeof(street));
+        memset(phone, 0, sizeof(phone));
+        memset(birthDate, 0, sizeof(birthDate));
     }
 }
 
@@ -263,17 +315,26 @@ void ClientLayer::renderSignup() {
  * @brief Renders menu screen.
  */
 void ClientLayer::renderMenu() {
-    if (ImGui::Button("Create room"))
+    TextCentered("MENU");
+
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Create room", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::CreateRoom;
-    if (ImGui::Button("Join room"))
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Join room", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::JoinRoom;
-    if (ImGui::Button("Statistics"))
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Statistics", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::PersonalStats;
-    if (ImGui::Button("Logout")) {
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Logout", ImVec2(buttonWidth, 0.0f))) {
         RequestHandler::logoutRequest();
         m_screen = Screens::Login;
     }
-    if (ImGui::Button("Exit")) {
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Exit", ImVec2(buttonWidth, 0.0f))) {
         RequestHandler::logoutRequest();
         m_app->Close();
     }
@@ -283,27 +344,50 @@ void ClientLayer::renderMenu() {
  * @brief Renders createRoom screen.
  */
 void ClientLayer::renderCreateRoom() {
+    TextCentered("CREATE ROOM");
+
+    float inputWidth = ImGui::GetWindowSize().x / 3.0f;
+    ImGui::PushItemWidth(inputWidth);
+
+    CenterItem(inputWidth);
     static char roomName[128] = "";
     ImGui::InputTextWithHint("##roomName", "Room name", roomName,
                              IM_ARRAYSIZE(roomName));
+    CenterItem(inputWidth);
     static int maxUsers = 5;
     limitedInputInt("Max users", &maxUsers, 1, 10);
+    CenterItem(inputWidth);
     static int questionCount = 10;
     limitedInputInt("Question count", &questionCount, 1, 30);
+    CenterItem(inputWidth);
     static int answerTimeout = 20;
     limitedInputInt("Answer timeout", &answerTimeout, 5, 120);
 
-    if (ImGui::Button("Create room")) {
-        RequestHandler::createRoomRequest(roomName, maxUsers, questionCount,
-                                          answerTimeout);
+    ImGui::PopItemWidth();
 
-        m_isAdmin = true;
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+    if (strcmp(roomName, "")) {
+        CenterItem(buttonWidth);
+        if (ImGui::Button("Create room", ImVec2(buttonWidth, 0.0f))) {
+            RequestHandler::createRoomRequest(roomName, maxUsers, questionCount,
+                                              answerTimeout);
 
-        m_screen = Screens::Room;
+            m_isAdmin = true;
+
+            m_screen = Screens::Room;
+        }
     }
 
-    if (ImGui::Button("Back"))
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Back", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::Menu;
+
+    if (m_screen != Screens::CreateRoom) {
+        memset(roomName, 0, sizeof(roomName));
+        maxUsers = 5;
+        questionCount = 10;
+        answerTimeout = 20;
+    }
 }
 
 /**
@@ -357,8 +441,10 @@ void ClientLayer::renderJoinRoom() {
         ImGui::EndTable();
     }
 
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
     if (selectedRoom != -1) {
-        if (ImGui::Button("Join room")) {
+        CenterItem(buttonWidth);
+        if (ImGui::Button("Join room", ImVec2(buttonWidth, 0.0f))) {
             RequestHandler::joinRoomRequest(selectedRoom);
 
             m_isAdmin = false;
@@ -367,7 +453,8 @@ void ClientLayer::renderJoinRoom() {
         }
     }
 
-    if (ImGui::Button("Back"))
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Back", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::Menu;
 }
 
@@ -420,7 +507,9 @@ void ClientLayer::renderPersonalStats() {
         ImGui::EndTable();
     }
 
-    if (ImGui::Button("Back"))
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Back", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::Menu;
 }
 
@@ -437,10 +526,12 @@ void ClientLayer::renderHighscore() {
         RequestHandler::getHighscoreRequest();
 
     for (auto i : highscore.statistics) {
-        ImGui::Text(i.c_str());
+        TextCentered(i.c_str());
     }
 
-    if (ImGui::Button("Back"))
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Back", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::Menu;
 }
 
@@ -484,17 +575,22 @@ void ClientLayer::renderRoom() {
     }
 
     if (m_isAdmin) {
-        if (ImGui::Button("Start game")) {
+        float buttonWidth = ImGui::GetWindowSize().x / 8.0f - 5.0f;
+        CenterItem(buttonWidth + 5.0f, 3.0f / 7.0f);
+        if (ImGui::Button("Start game", ImVec2(buttonWidth, 0.0f))) {
             RequestHandler::startGameRequest();
             m_screen = Screens::Game;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Close room")) {
+        CenterItem(buttonWidth - 2.5f, 4.0f / 7.0f);
+        if (ImGui::Button("Close room", ImVec2(buttonWidth, 0.0f))) {
             RequestHandler::closeRoomRequest();
             m_screen = Screens::Menu;
         }
     } else {
-        if (ImGui::Button("Leave room")) {
+        float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+        CenterItem(buttonWidth);
+        if (ImGui::Button("Leave room", ImVec2(buttonWidth, 0.0f))) {
             RequestHandler::leaveRoomRequest();
             m_screen = Screens::Menu;
         }
@@ -598,7 +694,9 @@ void ClientLayer::renderGame() {
                         (ImVec4)ImColor::HSV(0.0f, 0.0f, 0.5f));
                 }
             }
-            if (ImGui::Button(i.second.c_str())) {
+            float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+            CenterItem(buttonWidth);
+            if (ImGui::Button(i.second.c_str(), ImVec2(buttonWidth, 0.0f))) {
                 submit = RequestHandler::submitAnswerRequest(
                     i.first, questionTimeCounter);
                 hasQuestion = false;
@@ -618,7 +716,9 @@ void ClientLayer::renderGame() {
         }
     }
 
-    if (ImGui::Button("Leave game")) {
+    float buttonWidth = ImGui::GetWindowSize().x / 5.0f;
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Leave game", ImVec2(buttonWidth, 0.0f))) {
         RequestHandler::leaveGameRequest();
         m_screen = Screens::Menu;
     }
@@ -671,6 +771,8 @@ void ClientLayer::renderResults() {
         ImGui::EndTable();
     }
 
-    if (ImGui::Button("Menu"))
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Menu", ImVec2(buttonWidth, 0.0f)))
         m_screen = Screens::Menu;
 }

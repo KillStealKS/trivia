@@ -42,7 +42,7 @@ SignupResponse
 RequestHandler::signupRequest(std::string username, std::string password,
                               std::string email, std::string addr,
                               std::string phone, std::string date) {
-    if (!std::regex_match(username, std::regex(".*")))
+    if (!std::regex_match(username, std::regex(".+")))
         throw std::exception("Invalid username");
     if (!std::regex_match(password,
                           std::regex("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])["
