@@ -599,6 +599,10 @@ void ClientLayer::renderRoom() {
             m_screen = Screens::Menu;
         }
     }
+
+    if (m_screen != Screens::Room) {
+        getRoomStateCounter = 0;
+    }
 }
 
 /**
@@ -729,9 +733,9 @@ void ClientLayer::renderGame() {
         m_screen = Screens::Menu;
 
         questionCount = 0;
-        GetQuestionResponse question = {0, "",
+        question = {0, "",
                                         std::map<unsigned int, std::string>()};
-        float questionTimeCounter = -1;
+        questionTimeCounter = -1;
     }
 }
 
@@ -793,6 +797,9 @@ void ClientLayer::renderResults() {
 
     float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
     CenterItem(buttonWidth);
-    if (ImGui::Button("Menu", ImVec2(buttonWidth, 0.0f)))
+    if (ImGui::Button("Menu", ImVec2(buttonWidth, 0.0f))) {
         m_screen = Screens::Menu;
+        results = { 0, std::vector<PlayerResults>() };
+        getResultsCounter = 0;
+    }
 }

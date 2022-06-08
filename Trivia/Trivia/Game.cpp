@@ -133,3 +133,7 @@ bool Game::didGameEndForUser(LoggedUser user) {
  * @returns false otherwise.
  */
 bool Game::didGameEnd() { return m_playersFinished.size() == m_players.size(); }
+
+void Game::insertOut(LoggedUser user) { m_playersOut.push_back(user); }
+
+bool Game::allOut() { return m_players.size() == m_playersOut.size(); }

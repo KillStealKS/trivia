@@ -18,7 +18,7 @@ Room::Room(LoggedUser user, RoomData metadata) : m_metadata(metadata) {
 void Room::addUser(LoggedUser user) {
     for (auto i : m_users) {
         if (i.getUsername() == user.getUsername())
-            throw std::exception(__FUNCTION__ " - user already connected.");
+            throw std::exception("User already connected.");
     }
     m_users.push_back(user);
 }

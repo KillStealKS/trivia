@@ -22,6 +22,7 @@ class Game {
     std::vector<LoggedUser> m_playersWaiting;
     std::vector<LoggedUser> m_playersGotQuestion;
     std::vector<LoggedUser> m_playersFinished;
+    std::vector<LoggedUser> m_playersOut;
 
   public:
     Game() {}
@@ -47,6 +48,8 @@ class Game {
     bool finishedEmpty();
     bool didGameEndForUser(LoggedUser user);
     bool didGameEnd();
+    void insertOut(LoggedUser user);
+    bool allOut();
 };
 
 #endif // !GAME_H_

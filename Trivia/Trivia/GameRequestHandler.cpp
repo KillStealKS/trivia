@@ -180,8 +180,8 @@ RequestResult GameRequestHandler::getGameResults(RequestInfo reqInf) {
     if (m_game->didGameEnd()) {
         getGameResultsRes = {1, allPlayerResults};
 
-        m_game->removeFinished(m_user);
-        if (m_game->finishedEmpty()) {
+        m_game->insertOut(m_user);
+        if (m_game->allOut()) {
             m_gameManager.deleteGame(m_game->getID());
         }
 
