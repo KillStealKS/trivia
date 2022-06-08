@@ -494,8 +494,8 @@ void ClientLayer::renderPersonalStats() {
 
         std::stringstream stream;
         stream << std::fixed << std::setprecision(2)
-            << stats.statistics.totalAnswerTime /
-            stats.statistics.totalAnswers; // Format time to %f.2
+               << stats.statistics.totalAnswerTime /
+                      stats.statistics.totalAnswers; // Format time to %f.2
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
         ImGui::Text("Average answer time");
@@ -620,7 +620,9 @@ void ClientLayer::renderGame() {
     static unsigned int selectedAnswer = -1;
 
     const float maxQuestionTime = m_roomState.answerTimeout;
-    static float questionTimeCounter = maxQuestionTime;
+    static float questionTimeCounter = -1;
+    if (questionTimeCounter == -1)
+        questionTimeCounter = maxQuestionTime;
     static float resultTimeCounter = m_maxCounterTime;
 
     // Question countdown
@@ -725,6 +727,11 @@ void ClientLayer::renderGame() {
     if (ImGui::Button("Leave game", ImVec2(buttonWidth, 0.0f))) {
         RequestHandler::leaveGameRequest();
         m_screen = Screens::Menu;
+
+        questionCount = 0;
+        GetQuestionResponse question = {0, "",
+                                        std::map<unsigned int, std::string>()};
+        float questionTimeCounter = -1;
     }
 }
 
@@ -773,10 +780,10 @@ void ClientLayer::renderResults() {
 
             std::stringstream stream;
             stream << std::fixed << std::setprecision(2)
-                << i.averageAnswerTime; // Format time to %f.2
+                   << i.averageAnswerTime; // Format time to %f.2
             ImGui::TableNextColumn();
             ImGui::Text(stream.str().c_str());
-            
+
             ImGui::TableNextColumn();
             ImGui::Text(std::to_string(i.averageScore).c_str());
         }
