@@ -21,28 +21,20 @@ void Game::getQuestionForUser(LoggedUser user) {
  * @param user LoggedUser who answered.
  * @param answer The answer ID.
  */
-void Game::submitAnswer(LoggedUser user, unsigned int answer) {
+void Game::submitAnswer(LoggedUser user, unsigned int answer, float timeToAnswer) {
     GameData &userData = m_players[user];
 
+    userData.averageAnswerTime += timeToAnswer;
+
     if (m_players[user].currentQuestion.getShuffledAnswers()[answer] ==
-        m_players[user].currentQuestion.getCorrectAnswer())
+        m_players[user].currentQuestion.getCorrectAnswer()) {
         userData.correctAnswerCount++;
-    else
-        userData.wrongAnswerCount++;
-}
-
-/**
- * @brief Removes a player from the active players vector.
- *
- * @param user LoggedUser to be removed.
- */
-void Game::removePlayer(LoggedUser user) {
-    for (auto i : m_playersFinished) {
-        if (i.getUsername() == user.getUsername())
-            return;
+        userData.scores.push_back((int)(1000 / (1 + timeToAnswer)));
     }
-
-    m_playersFinished.push_back(user);
+    else {
+        userData.wrongAnswerCount++;
+        userData.scores.push_back(0);
+    }
 }
 
 /**
@@ -85,6 +77,42 @@ void Game::playerGotQuestion(LoggedUser user) {
     if (m_playersGotQuestion.size() == m_players.size())
         m_playersGotQuestion.clear();
 }
+
+/**
+ * @brief Inserts a player to finished vector.
+ *
+ * @param user Player.
+ */
+void Game::removePlayer(LoggedUser user) {
+    for (auto i : m_playersFinished) {
+        if (i.getUsername() == user.getUsername())
+            return;
+    }
+
+    m_playersFinished.push_back(user);
+}
+
+/**
+ * @brief Remove a player from the finished vector. 
+ * 
+ * @param user Player
+ */
+void Game::removeFinished(LoggedUser user) {
+    for (auto i = m_playersFinished.begin(); i != m_playersFinished.end(); i++) {
+        if (i->getUsername() == user.getUsername()) {
+            m_playersFinished.erase(i);
+            break;
+        }
+    }
+}
+
+/**
+ * @brief Checks if none of the players finished.
+ *
+ * @returns true if none of them did.
+ * @returns false otherwise.
+ */
+bool Game::finishedEmpty() { return m_playersFinished.empty(); }
 
 /**
  * @brief Checks if the user is on the last question.

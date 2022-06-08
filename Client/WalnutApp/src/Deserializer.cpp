@@ -575,6 +575,7 @@ SubmitAnswerResponse Deserializer::deserializeSubmitAnswerResponse(
 
     newSubmitAnswerResponse.status = msg["status"];
     newSubmitAnswerResponse.correctAnswer = msg["correctAnswer"];
+    newSubmitAnswerResponse.score = msg["score"];
 
     return newSubmitAnswerResponse;
 }
@@ -613,6 +614,7 @@ GetGameResultsResponse Deserializer::deserializeGetGameResultsResponse(
         results.correctAnswerCount = i["correctAnswerCount"];
         results.wrongAnswerCount = i["wrongAnswerCount"];
         results.averageAnswerTime = i["averageAnswerTime"];
+        results.averageScore = i["averageScore"];
 
         newGetGameResultsResponse.results.push_back(results);
     }

@@ -32,7 +32,8 @@ struct PlayerResults {
     std::string username;
     unsigned int correctAnswerCount;
     unsigned int wrongAnswerCount;
-    unsigned int averageAnswerTime;
+    float averageAnswerTime;
+    unsigned int averageScore;
 };
 
 struct ErrorResponse {
@@ -111,6 +112,7 @@ struct GetQuestionResponse {
 struct SubmitAnswerResponse {
     unsigned int status;
     unsigned int correctAnswer;
+    unsigned int score;
 };
 
 struct GetGameResultsResponse {

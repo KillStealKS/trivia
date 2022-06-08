@@ -10,7 +10,8 @@ struct GameData {
     Question currentQuestion;
     unsigned int correctAnswerCount;
     unsigned int wrongAnswerCount;
-    unsigned int averageAnswerTime;
+    float averageAnswerTime;
+    std::vector<unsigned int> scores;
 };
 
 class Game {
@@ -37,11 +38,13 @@ class Game {
     unsigned int getID() const { return m_id; }
     std::map<LoggedUser, GameData> getPlayers() { return m_players; }
     void getQuestionForUser(LoggedUser user);
-    void submitAnswer(LoggedUser user, unsigned int answerID);
-    void removePlayer(LoggedUser user);
+    void submitAnswer(LoggedUser user, unsigned int answerID, float timeToAnswer);
     bool arePlayersWaiting();
     void insertWaiting(LoggedUser user);
     void playerGotQuestion(LoggedUser user);
+    void removePlayer(LoggedUser user);
+    void removeFinished(LoggedUser user);
+    bool finishedEmpty();
     bool didGameEndForUser(LoggedUser user);
     bool didGameEnd();
 };

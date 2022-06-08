@@ -170,7 +170,7 @@ Serializer::serializeRequest(SubmitAnswerRequest submitAnswerRequest) {
     std::vector<unsigned char> buffer;
     json responseJson = json::object();
     responseJson["answerId"] = submitAnswerRequest.answerId;
-    responseJson["timeRemaining"] = submitAnswerRequest.timeRemaining;
+    responseJson["timeToAnswer"] = submitAnswerRequest.timeToAnswer;
 
     // Code
     buffer.push_back((unsigned char)RQ_SUBMITANSWER);
