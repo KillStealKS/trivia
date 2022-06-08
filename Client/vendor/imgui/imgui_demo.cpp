@@ -735,7 +735,7 @@ static void ShowDemoWindowWidgets()
             static int i0 = 123;
             ImGui::InputInt("input int", &i0);
 
-            static float f0 = 0.001f;
+            static float f0 = 0.001f;//
             ImGui::InputFloat("input float", &f0, 0.01f, 1.0f, "%.3f");
 
             static double d0 = 999999.00000001;

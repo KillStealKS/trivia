@@ -12,6 +12,7 @@ class LoggedUser {
     const std::string getUsername();
     void setUsername(const std::string username);
 
+    bool operator<(const LoggedUser other) const { return m_username < other.m_username; }
   private:
     std::string m_username;
 };

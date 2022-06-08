@@ -11,6 +11,7 @@ class RoomManager {
   private:
     std::map<int, Room> m_rooms;
     std::mutex *m_roomsMutex;
+    int m_currentID = 1;
 
   public:
     RoomManager() : m_roomsMutex(new std::mutex) {}
@@ -20,7 +21,8 @@ class RoomManager {
     unsigned int getRoomState(int ID);
     std::vector<RoomData> getRooms();
 
-    Room getRoom(int roomID);
+    Room* getRoom(int roomID);
+    int getCurrentID() { return m_currentID; }
 };
 
 #endif // !ROOMMANAGER_H_

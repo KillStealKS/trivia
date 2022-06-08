@@ -4,6 +4,7 @@
 #include "IDatabase.h"
 #include "Room.h"
 #include <iostream>
+#include <map>
 #include <vector>
 
 enum responseCodes {
@@ -79,7 +80,7 @@ struct GetHighScoreResponse {
 
 struct CloseRoomResponse {
     unsigned int status;
-} StartGameResponse;
+};
 
 struct StartGameResponse {
     unsigned int status;
@@ -95,7 +96,7 @@ struct GetRoomStateResponse {
 
 struct LeaveRoomResponse {
     unsigned int status;
-} LeaveRoomResponse;
+};
 
 struct LeaveGameResponse {
     unsigned int status;

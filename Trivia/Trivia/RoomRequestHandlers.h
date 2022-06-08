@@ -9,12 +9,12 @@ class RequestHandlerFactory;
 
 class RoomRequestHandler : public IRequestHandler {
 protected:
-    Room m_room;
+    int m_roomID;
     LoggedUser m_user;
     RequestHandlerFactory& m_handlerFactory;
     RoomManager& m_roomManager;
 
-    RoomRequestHandler(Room room, LoggedUser user,
+    RoomRequestHandler(int roomID, LoggedUser user,
         RequestHandlerFactory* factory, RoomManager* roomManager);
     
     RequestResult getRoomState(RequestInfo reqInf);
@@ -24,7 +24,7 @@ protected:
 
 class RoomAdminRequestHandler : public RoomRequestHandler {
 public:
-    RoomAdminRequestHandler(Room room, LoggedUser user,
+    RoomAdminRequestHandler(int roomID, LoggedUser user,
         RequestHandlerFactory* factory, RoomManager* roomManager);
 
     bool isRequestRelevant(RequestInfo reqInf);
@@ -39,7 +39,7 @@ private:
 
 class RoomMemberRequestHandler : public RoomRequestHandler {
 public:
-    RoomMemberRequestHandler(Room room, LoggedUser user,
+    RoomMemberRequestHandler(int roomID, LoggedUser user,
         RequestHandlerFactory* factory, RoomManager* roomManager);
 
     bool isRequestRelevant(RequestInfo reqInf);

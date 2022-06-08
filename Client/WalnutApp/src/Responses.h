@@ -2,8 +2,8 @@
 #define RESPONSES_H_
 
 #include <iostream>
-#include <vector>
 #include <map>
+#include <vector>
 
 enum responseCodes {
     RS_ERROR = 255,
@@ -26,7 +26,7 @@ enum responseCodes {
     RS_GETGAMERESULTS,
 };
 
-typedef struct Statistics {
+struct Statistics {
     std::string username;
     int totalGames;
     int gamesWon;
@@ -34,16 +34,16 @@ typedef struct Statistics {
     int correctAnswers;
     int totalAnswerTime;
     int highscore;
-} Statistics;
+};
 
-typedef struct RoomData {
+struct RoomData {
     unsigned int id;
     std::string name;
     unsigned int maxPlayers;
     unsigned int numOfQuestions;
     unsigned int timePerQuestion;
     unsigned int isActive;
-} RoomData;
+};
 
 struct PlayerResults {
     std::string username;

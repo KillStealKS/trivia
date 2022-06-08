@@ -574,6 +574,7 @@ SubmitAnswerResponse Deserializer::deserializeSubmitAnswerResponse(
     json msg = json::from_ubjson(buffer);
 
     newSubmitAnswerResponse.status = msg["status"];
+    newSubmitAnswerResponse.correctAnswer = msg["correctAnswer"];
 
     return newSubmitAnswerResponse;
 }

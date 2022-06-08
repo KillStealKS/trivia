@@ -27,6 +27,8 @@ class SQLiteDatabase : public IDatabase {
     int getNumOfTotalAnswers(std::string username) override;
     int getNumOfPlayerGames(std::string username) override;
     std::vector<std::string> getHighscores(int amount) override;
+
+    int updateUserStatistics(std::string username, Statistics newStats) override;
     static int statisticsCallback(void *data, int argc, char **argv,
                                   char **azColName);
 
@@ -36,7 +38,8 @@ class SQLiteDatabase : public IDatabase {
                                 char **azColName);
 
   private:
-    sqlite3 *m_Database;
+    sqlite3 *m_gameDatabase;
+    sqlite3 *m_questionDatabase;
 };
 
 #endif // !SQLITEDATABASE_H_

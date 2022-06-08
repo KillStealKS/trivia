@@ -3,15 +3,15 @@
 /**
  * @brief Construct a new RoomRequestHandler::RoomRequestHandler object
  *
- * @param room Room
+ * @param roomID The room's ID.
  * @param user User.
  * @param factory Request handler factory.
  * @param roomManager Room manager.
  * @param statisticsManager Statistics manager.
  */
-RoomRequestHandler::RoomRequestHandler(Room room, LoggedUser user, 
+RoomRequestHandler::RoomRequestHandler(int roomID, LoggedUser user, 
     RequestHandlerFactory* factory, RoomManager* roomManager) 
-    : m_room(room), m_user(user), 
+    : m_roomID(roomID), m_user(user), 
     m_handlerFactory(*factory), m_roomManager(*roomManager) {}
 
 /**
@@ -21,13 +21,18 @@ RoomRequestHandler::RoomRequestHandler(Room room, LoggedUser user,
  * @returns RequestResult.
  */
 RequestResult RoomRequestHandler::getRoomState(RequestInfo reqInf) {
-    RoomData roomData = m_room.getMetadata();
-    
+    Room* room = m_roomManager.getRoom(m_roomID);
+    RoomData roomData = room->getMetadata();
+
     GetRoomStateResponse roomStateRes = { 1,
-        (bool)roomData.isActive, m_room.getAllUsers(),
+        (bool)roomData.isActive, room->getAllUsers(),
         roomData.numOfQuestions, roomData.timePerQuestion };
 
-    RequestResult reqRes = {JsonResponsePacketSerializer::serializeResponse(roomStateRes), nullptr };
+    RequestResult reqRes;
+    reqRes.response = JsonResponsePacketSerializer::serializeResponse(roomStateRes);
+
+    reqRes.newHandler = (bool)roomData.isActive ?
+        m_handlerFactory.createGameRequestHandler(m_user, *room) : nullptr;
     return reqRes;
 }
 
@@ -36,15 +41,15 @@ RequestResult RoomRequestHandler::getRoomState(RequestInfo reqInf) {
 /**
  * @brief Construct a new RoomAdminRequestHandler::RoomAdminRequestHandler object
  *
- * @param room Room
+ * @param roomID The room's ID.
  * @param user User.
  * @param factory Request handler factory.
  * @param roomManager Room manager.
  * @param statisticsManager Statistics manager.
  */
-RoomAdminRequestHandler::RoomAdminRequestHandler(Room room, LoggedUser user,
+RoomAdminRequestHandler::RoomAdminRequestHandler(int roomID, LoggedUser user,
     RequestHandlerFactory* factory, RoomManager* roomManager)
-    : RoomRequestHandler(room, user, factory, roomManager) {}
+    : RoomRequestHandler(roomID, user, factory, roomManager) {}
 
 /**
  * @brief Checks if request is relevant.
@@ -106,12 +111,13 @@ RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo reqInf) {
  * @return RequestResult
  */
 RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo reqInf) {
-    for (auto i : m_room.getAllUsers()) {
-        m_room.removeUser(LoggedUser(i));
+    Room* room = m_roomManager.getRoom(m_roomID);
+
+    for (auto i : room->getAllUsers()) {
+        room->removeUser(LoggedUser(i));
     }
 
-    m_roomManager.deleteRoom(m_room.getMetadata().id);
-    
+    m_roomManager.deleteRoom(room->getMetadata().id);
 
     CloseRoomResponse closeRoomRes = { 1 };
     return { JsonResponsePacketSerializer::serializeResponse(closeRoomRes),
@@ -124,11 +130,12 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo reqInf) {
  * @return RequestResult
  */
 RequestResult RoomAdminRequestHandler::startGame(RequestInfo reqInf) {
-    m_room.setIsActive(1);
+    Room* room = m_roomManager.getRoom(m_roomID);
+    room->setIsActive(1);
 
     StartGameResponse startGameRes = { 1 };
     return { JsonResponsePacketSerializer::serializeResponse(startGameRes),
-        nullptr };
+        m_handlerFactory.createGameRequestHandler(m_user, *room) };
 }
 
 
@@ -136,15 +143,15 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo reqInf) {
 /**
  * @brief Construct a new RoomMemberRequestHandler::RoomMemberRequestHandler object
  *
- * @param room Room
+ * @param roomID The room's ID.
  * @param user User.
  * @param factory Request handler factory.
  * @param roomManager Room manager.
  * @param statisticsManager Statistics manager.
  */
-RoomMemberRequestHandler::RoomMemberRequestHandler(Room room, LoggedUser user, 
+RoomMemberRequestHandler::RoomMemberRequestHandler(int roomID, LoggedUser user, 
     RequestHandlerFactory* factory, RoomManager* roomManager)
-    : RoomRequestHandler(room, user, factory, roomManager) {}
+    : RoomRequestHandler(roomID, user, factory, roomManager) {}
 
 /**
  * @brief Checks if request is relevant.
@@ -203,7 +210,8 @@ RequestResult RoomMemberRequestHandler::handleRequest(RequestInfo reqInf) {
  * @returns RequestResult.
  */
 RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo reqInf) {
-    m_room.removeUser(m_user.getUsername());
+    Room* room = m_roomManager.getRoom(m_roomID);
+    room->removeUser(m_user.getUsername());
     
     LeaveRoomResponse leaveRoomRes = { 1 };
     return { JsonResponsePacketSerializer::serializeResponse(leaveRoomRes),

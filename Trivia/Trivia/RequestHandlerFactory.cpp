@@ -5,7 +5,7 @@
  */
 RequestHandlerFactory::RequestHandlerFactory()
     : m_database(new SQLiteDatabase()), m_loginManager(m_database),
-      m_statisticsManager(m_database) {
+      m_statisticsManager(m_database), m_gameManager(m_database) {
     m_database->open();
 }
 
@@ -25,10 +25,24 @@ RequestHandlerFactory::createMenuRequestHandler(LoggedUser user) {
                                   &m_statisticsManager);
 }
 
-RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room room, LoggedUser user) {
-    return new RoomAdminRequestHandler(room, user, this, &m_roomManager);
+/*
+ * @brief creates a new RoomAdminRequestHandler
+ */
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(int roomID, LoggedUser user) {
+    return new RoomAdminRequestHandler(roomID, user, this, &m_roomManager);
 }
 
-RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(Room room, LoggedUser user) {
-    return new RoomMemberRequestHandler(room, user, this, &m_roomManager);
+/*
+ * @brief creates a new RoomMemberRequestHandler
+ */
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(int roomID, LoggedUser user) {
+    return new RoomMemberRequestHandler(roomID, user, this, &m_roomManager);
+}
+
+/*
+ * @brief creates a new GameRequestHandler
+ */
+GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(LoggedUser user, Room room)
+{
+    return new GameRequestHandler(user, this, &m_gameManager, room);
 }

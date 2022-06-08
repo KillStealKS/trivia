@@ -20,7 +20,6 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>WalnutApp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>TriviaClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -139,12 +138,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\ClientLayer.cpp" />
-    <ClCompile Include="src\Communicator.cpp" />
-    <ClCompile Include="src\Deserializer.cpp" />
-    <ClCompile Include="src\RequestHandler.cpp" />
-    <ClCompile Include="src\Serializer.cpp" />
+    <ClInclude Include="src\ClientLayer.h" />
+    <ClInclude Include="src\Communicator.h" />
+    <ClInclude Include="src\Deserializer.h" />
+    <ClInclude Include="src\RequestHandler.h" />
+    <ClInclude Include="src\Requests.h" />
+    <ClInclude Include="src\Responses.h" />
+    <ClInclude Include="src\Serializer.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\Client.cpp">
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <ClCompile Include="src\ClientLayer.cpp">
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <ClCompile Include="src\Communicator.cpp">
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <ClCompile Include="src\Deserializer.cpp">
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <ClCompile Include="src\RequestHandler.cpp">
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <ClCompile Include="src\Serializer.cpp">
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
@@ -154,16 +182,6 @@
     <ProjectReference Include="..\Walnut\Walnut.vcxproj">
       <Project>{C038E8D9-ACDA-12B0-9595-260481D69900}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\ClientLayer.h" />
-    <ClInclude Include="src\Communicator.h" />
-    <ClInclude Include="src\Deserializer.h" />
-    <ClInclude Include="src\json.hpp" />
-    <ClInclude Include="src\RequestHandler.h" />
-    <ClInclude Include="src\Requests.h" />
-    <ClInclude Include="src\Responses.h" />
-    <ClInclude Include="src\Serializer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

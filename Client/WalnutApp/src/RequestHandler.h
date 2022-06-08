@@ -33,7 +33,8 @@ class RequestHandler {
     static LeaveRoomResponse leaveRoomRequest();
     static LeaveGameResponse leaveGameRequest();
     static GetQuestionResponse getQuestionRequest();
-    static SubmitAnswerResponse submitAnswerRequest(unsigned int answerId);
+    static SubmitAnswerResponse submitAnswerRequest(unsigned int answerId,
+                                                    float timeRemaining);
     static GetGameResultsResponse getGameResultsRequest();
 };
 

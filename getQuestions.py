@@ -3,8 +3,9 @@ from typing import Any, Dict
 import requests
 import sqlite3
 from sqlite3 import Error, Connection
+from bs4 import BeautifulSoup as bs
 
-AMOUNT = 10
+AMOUNT = 100
 URL = f"https://opentdb.com/api.php?amount={AMOUNT}&type=multiple"
 DB_FILE = "./questions.sqlite"
 
@@ -35,7 +36,7 @@ def create_table(conn: Connection) -> None:
     except Error as e:
         print(e)
 
-    sql = """DELETE FROM Questions;"""  # FIXME: Reset ID.
+    sql = """DELETE FROM Questions;"""
 
     try:
         c = conn.cursor()
@@ -45,18 +46,18 @@ def create_table(conn: Connection) -> None:
 
 
 def insert_question(conn: Connection, question: Dict) -> Any:
-    sql = """INSERT INTO Questions(Question,Answer,Inc1,Inc2,Inc3)
+    sql = """INSERT INTO Questions(Question,Answer,Incorrect1,Incorrect2,Incorrect3)
              VALUES(?,?,?,?,?);"""
 
     c = conn.cursor()
     c.execute(
         sql,
         (
-            question["question"],
-            question["correct_answer"],
-            question["incorrect_answers"][0],
-            question["incorrect_answers"][1],
-            question["incorrect_answers"][2],
+            bs(question["question"]).text,
+            bs(question["correct_answer"]).text,
+            bs(question["incorrect_answers"][0]).text,
+            bs(question["incorrect_answers"][1]).text,
+            bs(question["incorrect_answers"][2]).text,
         ),
     )
     conn.commit()

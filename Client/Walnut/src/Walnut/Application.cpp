@@ -543,7 +543,7 @@ namespace Walnut {
 	{
 		m_Running = true;
 
-		ImGui_ImplVulkanH_Window* wd = &g_MainWindowData;
+		ImGui_ImplVulkanH_Window *wd = &g_MainWindowData;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 		ImGuiIO& io = ImGui::GetIO();
 
@@ -609,33 +609,33 @@ namespace Walnut {
 				// all active windows docked into it will lose their parent and become undocked.
 				// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
 				// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-				ImGui::Begin("DockSpace Demo", nullptr, window_flags);
-				ImGui::PopStyleVar();
+				//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+				//ImGui::Begin("DockSpace Demo", nullptr, window_flags);
+				//ImGui::PopStyleVar();
 
 				ImGui::PopStyleVar(2);
 
 				// Submit the DockSpace
-				ImGuiIO& io = ImGui::GetIO();
-				if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-				{
-					ImGuiID dockspace_id = ImGui::GetID("VulkanAppDockspace");
-					ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-				}
+				//ImGuiIO& io = ImGui::GetIO();
+				//if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+				//{
+				//	ImGuiID dockspace_id = ImGui::GetID("VulkanAppDockspace");
+					//ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+				//}
 
-				if (m_MenubarCallback)
+				/*if (m_MenubarCallback)
 				{
 					if (ImGui::BeginMenuBar())
 					{
 						m_MenubarCallback();
 						ImGui::EndMenuBar();
 					}
-				}
+				}*/
 
-				for (auto& layer : m_LayerStack)
+				for (auto &layer : m_LayerStack)
 					layer->OnUIRender();
 
-				ImGui::End();
+				//ImGui::End();
 			}
 
 			// Rendering
