@@ -530,7 +530,7 @@ void ClientLayer::renderHighscore() {
         RequestHandler::getHighscoreRequest();
 
     for (auto i : highscore.statistics) {
-        TextCentered(i.c_str());
+        ImGui::Text(i.c_str());
     }
 
     float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
