@@ -13,7 +13,7 @@ bool SQLiteDatabase::open() {
     int res = sqlite3_open(questionDBFileName, &m_questionDatabase);
     if (res != SQLITE_OK) {
         m_questionDatabase = nullptr;
-        throw std::exception(__FUNCTION__ " - question database open failed");
+        throw std::exception("Question database open failed.");
     }
 
     // checking if game database exists
@@ -23,7 +23,7 @@ bool SQLiteDatabase::open() {
     res = sqlite3_open(gameDBFileName, &m_gameDatabase);
     if (res != SQLITE_OK) {
         m_gameDatabase = nullptr;
-        throw std::exception(__FUNCTION__ " - game database open failed");
+        throw std::exception("Game database open failed.");
     }
 
     // creating schema if file was created
@@ -42,7 +42,7 @@ bool SQLiteDatabase::open() {
             std::cout << errMsg << std::endl;
             sqlite3_close(m_gameDatabase);
             m_gameDatabase = nullptr;
-            throw std::exception(__FUNCTION__ " - creating Users table");
+            throw std::exception("Creating Users table failed.");
         }
 
         // creating Statistics
@@ -61,7 +61,7 @@ bool SQLiteDatabase::open() {
             std::cout << errMsg << std::endl;
             sqlite3_close(m_gameDatabase);
             m_gameDatabase = nullptr;
-            throw std::exception(__FUNCTION__ " - creating Statistics table");
+            throw std::exception("Creating Statistics table failed.");
         }
     }
 
@@ -84,7 +84,7 @@ bool SQLiteDatabase::doesUserExist(std::string username) {
     if (res == SQLITE_OK)
         return !userList.empty();
     else
-        throw std::exception(__FUNCTION__ " - user exists check failed");
+        throw std::exception("User exists check failed.");
 }
 
 /**
@@ -103,7 +103,7 @@ bool SQLiteDatabase::doesPasswordMatch(std::string username,
     if (res == SQLITE_OK)
         return !userList.empty();
     else
-        throw std::exception(__FUNCTION__ " - password match check failed");
+        throw std::exception("Password match check failed.");
 }
 
 /**
@@ -125,7 +125,7 @@ void SQLiteDatabase::addNewUser(std::string username, std::string password,
                            nullptr, &errMsg);
     if (res != SQLITE_OK) {
         std::cout << errMsg;
-        throw std::exception(__FUNCTION__ " - database Users insertion failed");
+        throw std::exception("Database Users insertion failed.");
     }
 
     // Statistics table insertion
@@ -139,8 +139,7 @@ void SQLiteDatabase::addNewUser(std::string username, std::string password,
                        &errMsg);
     if (res != SQLITE_OK) {
         std::cout << errMsg;
-        throw std::exception(
-            __FUNCTION__ " - database Statistics insertion failed");
+        throw std::exception("Database Statistics insertion failed.");
     }
 }
 
@@ -191,7 +190,7 @@ Statistics SQLiteDatabase::getPlayerStatistics(std::string username) {
     if (res == SQLITE_OK)
         return statisticsList[0];
     else
-        throw std::exception(__FUNCTION__ " - player statistics failed");
+        throw std::exception("Get player statistics failed.");
 }
 
 /**
@@ -212,7 +211,7 @@ float SQLiteDatabase::getPlayerAverageTime(std::string username) {
         return statisticsList[0].totalAnswerTime /
                statisticsList[0].totalAnswers;
     else
-        throw std::exception(__FUNCTION__ " - average answer time failed");
+        throw std::exception("Get average answer time failed.");
 }
 
 /**
@@ -232,8 +231,7 @@ int SQLiteDatabase::getNumOfCorrectAnswers(std::string username) {
     if (res == SQLITE_OK)
         return statisticsList[0].correctAnswers;
     else
-        throw std::exception(
-            __FUNCTION__ " - number of correct answers failed");
+        throw std::exception("Get number of correct answers failed.");
 }
 
 /**
@@ -253,7 +251,7 @@ int SQLiteDatabase::getNumOfTotalAnswers(std::string username) {
     if (res == SQLITE_OK)
         return statisticsList[0].totalAnswers;
     else
-        throw std::exception(__FUNCTION__ " - total number of answers failed");
+        throw std::exception("Get total number of answers failed.");
 }
 
 /**
@@ -273,7 +271,7 @@ int SQLiteDatabase::getNumOfPlayerGames(std::string username) {
     if (res == SQLITE_OK)
         return statisticsList[0].totalGames;
     else
-        throw std::exception(__FUNCTION__ " - total number of games failed");
+        throw std::exception("Get total number of games failed.");
 }
 
 /**
@@ -302,7 +300,7 @@ std::vector<std::string> SQLiteDatabase::getHighscores(int amount) {
 
         return highscores;
     } else
-        throw std::exception(__FUNCTION__ " - all time highscores failed");
+        throw std::exception("Get all time highscores failed.");
 }
 
 /**
@@ -341,7 +339,7 @@ int SQLiteDatabase::updateUserStatistics(std::string username,
                            nullptr, &errMsg);
     if (res != SQLITE_OK) {
         std::cout << errMsg;
-        throw std::exception(__FUNCTION__ " - user Statistics update failed");
+        throw std::exception("User Statistics update failed.");
     }
     return 0;
 }
@@ -396,7 +394,7 @@ std::vector<Question> SQLiteDatabase::getQuestions(int amount) {
         return questionList;
     else {
         std::cout << errMsg << std::endl;
-        throw std::exception(__FUNCTION__ " - get questions failed");
+        throw std::exception("Get questions failed");
     }
 }
 
