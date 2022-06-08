@@ -59,5 +59,5 @@ Room* RoomManager::getRoom(int roomID) {
         if (i->first == roomID)
             return &(i->second);
     }
-    throw std::exception(__FUNCTION__ " - roomID not found.");
+    throw std::exception("RoomID not found.");
 }

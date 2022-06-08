@@ -45,11 +45,11 @@ void LoginManager::signup(std::string username, std::string password,
  */
 LoggedUser LoginManager::login(std::string username, std::string password) {
     if (!m_database->doesUserExist(username))
-        throw std::exception(__FUNCTION__ " - username not found.");
+        throw std::exception("username not found.");
 
     for (auto i : m_loggedUsers) {
         if (i.getUsername() == username)
-            throw std::exception(__FUNCTION__ " - user already logged in.");
+            throw std::exception("user already logged in.");
     }
 
     if (m_database->doesPasswordMatch(username, password)) {

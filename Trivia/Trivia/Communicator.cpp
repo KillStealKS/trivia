@@ -19,7 +19,7 @@ Communicator::Communicator(RequestHandlerFactory &factory)
     m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     if (m_serverSocket == INVALID_SOCKET)
-        throw std::exception(__FUNCTION__ " - socket");
+        throw std::exception("socket creation failed.");
 }
 
 /**
@@ -46,10 +46,10 @@ void Communicator::startHandleRequests() {
 
         if (bind(m_serverSocket, (struct sockaddr *)&sa, sizeof(sa)) ==
             SOCKET_ERROR)
-            throw std::exception(__FUNCTION__ " - bind");
+            throw std::exception("socket binding failed.");
 
         if (listen(m_serverSocket, SOMAXCONN) == SOCKET_ERROR)
-            throw std::exception(__FUNCTION__ " - listen");
+            throw std::exception("socket listening failed.");
         std::cout << "Listening on port " << PORT << std::endl;
 
         while (true) {
@@ -67,7 +67,7 @@ void Communicator::startHandleRequests() {
 void Communicator::bindAndListen() {
     SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
     if (client_socket == INVALID_SOCKET)
-        throw std::exception(__FUNCTION__ " - bind new client socket");
+        throw std::exception("client socket binding failed.");
 
     std::cout << "Client accepted." << std::endl;
 
