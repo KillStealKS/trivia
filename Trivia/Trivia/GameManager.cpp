@@ -33,10 +33,15 @@ void GameManager::deleteGame(unsigned int id) {
 			auto players = (*i)->getPlayers();
 
 			//determining winner
-			for (auto j : players) {	//TODO
-				if (overallHighscore < j.second.correctAnswerCount) {
+			for (auto j : players) {
+				unsigned int playerHighscore = 0;
+				for (auto k : j.second.scores)
+					playerHighscore += k;
+				playerHighscore /= j.second.correctAnswerCount + j.second.wrongAnswerCount;
+
+				if (overallHighscore < playerHighscore) {
 					winnerUser = j.first;
-					overallHighscore = j.second.correctAnswerCount;
+					overallHighscore = playerHighscore;
 				}
 			}
 
@@ -45,14 +50,17 @@ void GameManager::deleteGame(unsigned int id) {
 				tempUser = j.first;	//needed because keys in a map are always constants
 
 				tempStats.totalGames = 1;
-				if (tempUser.getUsername() == winnerUser.getUsername())
-					tempStats.gamesWon = 1;
-				else
-					tempStats.gamesWon = 0;
+				tempStats.gamesWon = (tempUser.getUsername() == 
+					winnerUser.getUsername() ? 1 : 0);
 				tempStats.totalAnswers = j.second.correctAnswerCount + j.second.wrongAnswerCount;
 				tempStats.correctAnswers = j.second.correctAnswerCount;
-				tempStats.totalAnswerTime = 0;	//TODO
-				tempStats.highscore = j.second.correctAnswerCount;	//TODO
+				tempStats.totalAnswerTime = j.second.averageAnswerTime;
+
+				unsigned int playerHighscore = 0;
+				for (auto k : j.second.scores)
+					playerHighscore += k;
+				playerHighscore /= j.second.correctAnswerCount + j.second.wrongAnswerCount;
+				tempStats.highscore = playerHighscore;
 
 				m_database->updateUserStatistics(tempUser.getUsername(), tempStats);
 			}

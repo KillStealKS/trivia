@@ -124,19 +124,20 @@ RequestResult GameRequestHandler::getQuestion(RequestInfo reqInf) {
  */
 RequestResult GameRequestHandler::submitAnswer(RequestInfo reqInf) {
     Question currQuestion = m_game->getPlayers()[m_user].currentQuestion;
-    m_game->submitAnswer(
-        m_user, JsonResponsePacketDeserializer::deserializeSubmitAnswerRequest(
-                    reqInf.buffer)
-                    .answerId);
+    SubmitAnswerRequest submitAnswerReq =
+        JsonResponsePacketDeserializer::deserializeSubmitAnswerRequest(reqInf.buffer);
 
-    unsigned int id = 0;
-    SubmitAnswerResponse submitAnswerRes;
+    m_game->submitAnswer(m_user, submitAnswerReq.answerId, 
+        submitAnswerReq.timeToAnswer);
+    auto scores = m_game->getPlayers()[m_user].scores;
+
+    SubmitAnswerResponse submitAnswerRes = { 1, 0,
+        (scores.empty() ? 0 : scores.back())};
+
     for (auto i : currQuestion.getShuffledAnswers()) {
-        if (i == currQuestion.getCorrectAnswer()) {
-            submitAnswerRes.correctAnswer = id;
+        if (i == currQuestion.getCorrectAnswer())
             break;
-        }
-        id++;
+        submitAnswerRes.correctAnswer++;
     }
 
     m_game->getQuestionForUser(m_user);
@@ -160,19 +161,33 @@ RequestResult GameRequestHandler::getGameResults(RequestInfo reqInf) {
 
     for (auto i : m_game->getPlayers()) {
         LoggedUser user = i.first;
+        
+        float averageAnswerTime = i.second.averageAnswerTime;
+        averageAnswerTime /= i.second.correctAnswerCount + i.second.wrongAnswerCount;
+        
+        unsigned int averageScore = 0;
+        for (auto i : i.second.scores)
+            averageScore += i;
+        averageScore /= i.second.correctAnswerCount + i.second.wrongAnswerCount;
 
         allPlayerResults.push_back(
-            {user.getUsername(), i.second.correctAnswerCount,
-             i.second.wrongAnswerCount, i.second.averageAnswerTime});
+            { user.getUsername(), i.second.correctAnswerCount, 
+            i.second.wrongAnswerCount, averageAnswerTime, averageScore });
     }
 
     GetGameResultsResponse getGameResultsRes;
 
     if (m_game->didGameEnd()) {
         getGameResultsRes = {1, allPlayerResults};
+
+        m_game->removeFinished(m_user);
+        if (m_game->finishedEmpty()) {
+            m_gameManager.deleteGame(m_game->getID());
+        }
+
         return {
             JsonResponsePacketSerializer::serializeResponse(getGameResultsRes),
-            m_handlerFactory.createMenuRequestHandler(m_user)};
+            m_handlerFactory.createMenuRequestHandler(m_user) };
     } else {
         getGameResultsRes = {0, allPlayerResults};
         return {

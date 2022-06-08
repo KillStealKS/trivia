@@ -492,11 +492,15 @@ void ClientLayer::renderPersonalStats() {
         ImGui::TableNextColumn();
         ImGui::Text(correctAnswers.c_str());
 
+        std::stringstream stream;
+        stream << std::fixed << std::setprecision(2)
+            << stats.statistics.totalAnswerTime /
+            stats.statistics.totalAnswers; // Format time to %f.2
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::Text("Total answer time");
+        ImGui::Text("Average answer time");
         ImGui::TableNextColumn();
-        ImGui::Text(std::to_string(stats.statistics.totalAnswerTime).c_str());
+        ImGui::Text(stream.str().c_str());
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
@@ -698,7 +702,7 @@ void ClientLayer::renderGame() {
             CenterItem(buttonWidth);
             if (ImGui::Button(i.second.c_str(), ImVec2(buttonWidth, 0.0f))) {
                 submit = RequestHandler::submitAnswerRequest(
-                    i.first, questionTimeCounter);
+                    i.first, maxQuestionTime - questionTimeCounter);
                 hasQuestion = false;
                 showResult = true;
             }
@@ -739,7 +743,7 @@ void ClientLayer::renderResults() {
         return;
     }
 
-    if (ImGui::BeginTable("Room data", 3,
+    if (ImGui::BeginTable("Room data", 4,
                           ImGuiTableFlags_Resizable |
                               ImGuiTableFlags_NoSavedSettings |
                               ImGuiTableFlags_Borders)) {
@@ -753,6 +757,9 @@ void ClientLayer::renderResults() {
         ImGui::TableNextColumn();
         ImGui::Text("Average answer time");
 
+        ImGui::TableNextColumn();
+        ImGui::Text("Average score");
+
         for (auto i : results.results) {
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
@@ -764,8 +771,14 @@ void ClientLayer::renderResults() {
             ImGui::TableNextColumn();
             ImGui::Text(answers.c_str());
 
+            std::stringstream stream;
+            stream << std::fixed << std::setprecision(2)
+                << i.averageAnswerTime; // Format time to %f.2
             ImGui::TableNextColumn();
-            ImGui::Text(std::to_string(i.averageAnswerTime).c_str());
+            ImGui::Text(stream.str().c_str());
+            
+            ImGui::TableNextColumn();
+            ImGui::Text(std::to_string(i.averageScore).c_str());
         }
 
         ImGui::EndTable();

@@ -199,7 +199,7 @@ JsonResponsePacketDeserializer::deserializeSubmitAnswerRequest(
     json msg = json::from_ubjson(buffer);
 
     newSubmitAnswerRequest.answerId = msg["answerId"];
-    newSubmitAnswerRequest.timeRemaining = msg["timeRemaining"];
+    newSubmitAnswerRequest.timeToAnswer = msg["timeToAnswer"];
 
     return newSubmitAnswerRequest;
 }

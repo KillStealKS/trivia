@@ -54,7 +54,7 @@ struct CreateRoomRequest {
 
 struct SubmitAnswerRequest {
     unsigned int answerId;
-    float timeRemaining;
+    float timeToAnswer;
 };
 
 #endif // !REQUESTS_H_

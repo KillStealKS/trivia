@@ -34,7 +34,7 @@ class RequestHandler {
     static LeaveGameResponse leaveGameRequest();
     static GetQuestionResponse getQuestionRequest();
     static SubmitAnswerResponse submitAnswerRequest(unsigned int answerId,
-                                                    float timeRemaining);
+                                                    float timeToAnswer);
     static GetGameResultsResponse getGameResultsRequest();
 };
 

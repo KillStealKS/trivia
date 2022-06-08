@@ -524,6 +524,7 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
     json responseJson = json::object();
     responseJson["status"] = submitAnswerResponse.status;
     responseJson["correctAnswer"] = submitAnswerResponse.correctAnswer;
+    responseJson["score"] = submitAnswerResponse.score;
 
     // Code
     buffer.push_back((unsigned char)RS_SUBMITANSWER);
@@ -561,6 +562,7 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(
         resultJson["correctAnswerCount"] = i.correctAnswerCount;
         resultJson["wrongAnswerCount"] = i.wrongAnswerCount;
         resultJson["averageAnswerTime"] = i.averageAnswerTime;
+        resultJson["averageScore"] = i.averageScore;
 
         responseJson["results"].insert(responseJson["results"].end(),
                                        resultJson);

@@ -380,8 +380,8 @@ GetQuestionResponse RequestHandler::getQuestionRequest() {
  * @return SubmitAnswerResponse Response.
  */
 SubmitAnswerResponse RequestHandler::submitAnswerRequest(unsigned int answerId,
-                                                         float timeRemaining) {
-    SubmitAnswerRequest request = {answerId, timeRemaining};
+                                                         float timeToAnswer) {
+    SubmitAnswerRequest request = {answerId, timeToAnswer};
     std::vector<unsigned char> serializedRequest =
         Serializer::serializeRequest(request);
     std::vector<unsigned char> serializedResponse =
