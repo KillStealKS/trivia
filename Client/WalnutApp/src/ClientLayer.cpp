@@ -1,5 +1,7 @@
 #include "ClientLayer.h"
 
+float ClientLayer::m_maxCounterTime = 3;
+
 void ClientLayer::OnAttach() {
     Communicator::communicator.startNewConnection();
 }
@@ -7,7 +9,9 @@ void ClientLayer::OnAttach() {
 void ClientLayer::OnUIRender() {
     updateDeltaTime();
 
-    ImGui::Begin("Trivia");
+    ImGui::Begin("Trivia", (bool *)0,
+                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoCollapse);
 
     static std::string errStr;
     try {
@@ -36,6 +40,12 @@ void ClientLayer::OnUIRender() {
         case Screens::Room:
             renderRoom();
             break;
+        case Screens::Game:
+            renderGame();
+            break;
+        case Screens::Results:
+            renderResults();
+            break;
         }
     } catch (const std::exception &e) {
         errStr = e.what();
@@ -51,13 +61,63 @@ void ClientLayer::OnUIRender() {
         }
         ImGui::EndPopup();
     }
-    
-    ImGui::End();
 
-    ImGui::ShowDemoWindow();
+    ImGui::End();
 }
 
 void ClientLayer::OnDetach() {}
+
+/**
+ * @brief Creates an ImGui::InputInt with value limiting.
+ *
+ * @param label Input label.
+ * @param v Value.
+ * @param min Minimum value.
+ * @param max Maximum value.
+ */
+void limitedInputInt(std::string label, int *v, int min, int max) {
+    ImGui::InputInt(label.c_str(), v);
+    if (*v > max)
+        *v = max;
+    if (*v < min)
+        *v = min;
+}
+
+/**
+ * @brief Centers next ImGui item.
+ *
+ * @param width Item width.
+ * @param offset Center offset.
+ */
+void CenterItem(float width, float offset = 0.5f) {
+    float winWidth = ImGui::GetWindowSize().x;
+
+    float indent = (winWidth - width) * offset;
+
+    ImGui::SetCursorPosX(indent);
+}
+
+/**
+ * @brief Creates a centered text.
+ *
+ * @param text Text.
+ */
+void TextCentered(std::string text) {
+    float winWidth = ImGui::GetWindowSize().x;
+    float textWidth = ImGui::CalcTextSize(text.c_str()).x;
+
+    float textIndent = (winWidth - textWidth) * 0.5f;
+
+    float minIndentation = 20.0f;
+    if (textIndent <= minIndentation) {
+        textIndent = minIndentation;
+    }
+
+    ImGui::SameLine(textIndent);
+    ImGui::PushTextWrapPos(winWidth - textIndent);
+    ImGui::TextWrapped(text.c_str());
+    ImGui::PopTextWrapPos();
+}
 
 /**
  * @brief Creates a tooltip help marker.
@@ -109,9 +169,10 @@ void ClientLayer::updateDeltaTime() {
  * @return true If counter reached 0.
  * @return false If not.
  */
-bool ClientLayer::count(float *counter) {
+bool ClientLayer::count(float *counter, float maxCountTime, bool autoReset) {
     if (*counter <= 0) {
-        *counter = m_maxCounterTime;
+        if (autoReset)
+            *counter = maxCountTime;
         return true;
     }
 
@@ -123,9 +184,17 @@ bool ClientLayer::count(float *counter) {
  * @brief Renders login screen.
  */
 void ClientLayer::renderLogin() {
+    TextCentered("LOGIN");
+
+    float inputWidth = ImGui::GetWindowSize().x / 3.0f;
+    ImGui::PushItemWidth(inputWidth);
+
+    CenterItem(inputWidth);
     static char username[128] = "";
     ImGui::InputTextWithHint("##username", "Username", username,
                              IM_ARRAYSIZE(username));
+
+    CenterItem(inputWidth);
     static char password[128] = "";
     ImGui::InputTextWithHint("##password", "Password", password,
                              IM_ARRAYSIZE(password));
@@ -133,13 +202,18 @@ void ClientLayer::renderLogin() {
     HelpMarker(
         "has to contain at least 1 lowercase letter, 1 uppercase letter, "
         "1 digit and 1 non-alphanumeric character");
+    ImGui::PopItemWidth();
 
-    if (ImGui::Button("Login")) {
+    float buttonWidth = ImGui::GetWindowSize().x / 4.0f;
+
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Login", ImVec2(buttonWidth, 0.0f))) {
         if (RequestHandler::loginRequest(username, password).status == RS_LOGIN)
             m_screen = Screens::Menu;
     }
 
-    if (ImGui::Button("Signup")) {
+    CenterItem(buttonWidth);
+    if (ImGui::Button("Signup", ImVec2(buttonWidth, 0.0f))) {
         m_screen = Screens::Signup;
         return;
     }
@@ -213,11 +287,11 @@ void ClientLayer::renderCreateRoom() {
     ImGui::InputTextWithHint("##roomName", "Room name", roomName,
                              IM_ARRAYSIZE(roomName));
     static int maxUsers = 5;
-    ImGui::InputInt("Max users", &maxUsers);
+    limitedInputInt("Max users", &maxUsers, 1, 10);
     static int questionCount = 10;
-    ImGui::InputInt("Question count", &questionCount);
+    limitedInputInt("Question count", &questionCount, 1, 30);
     static int answerTimeout = 20;
-    ImGui::InputInt("Answer timeout", &answerTimeout);
+    limitedInputInt("Answer timeout", &answerTimeout, 5, 120);
 
     if (ImGui::Button("Create room")) {
         RequestHandler::createRoomRequest(roomName, maxUsers, questionCount,
@@ -374,9 +448,10 @@ void ClientLayer::renderHighscore() {
  * @brief Render room screen.
  */
 void ClientLayer::renderRoom() {
-    GetRoomStateResponse roomState;
-    static float getRoomSateCounter = 0;
-    if (count(&getRoomSateCounter))
+    static GetRoomStateResponse roomState;
+    m_roomState = roomState;
+    static float getRoomStateCounter = 0;
+    if (count(&getRoomStateCounter))
         roomState = RequestHandler::getRoomStateRequest();
 
     if (roomState.hasGameBegun)
@@ -424,4 +499,178 @@ void ClientLayer::renderRoom() {
             m_screen = Screens::Menu;
         }
     }
+}
+
+/**
+ * @brief Render game screen.
+ */
+void ClientLayer::renderGame() {
+    static int questionCount = 0;
+    if (questionCount == m_roomState.questionCount) {
+        questionCount = 0;
+        m_screen = Screens::Results;
+    }
+
+    static GetQuestionResponse question = {
+        0, "", std::map<unsigned int, std::string>()};
+    static SubmitAnswerResponse submit;
+
+    static bool hasQuestion = false;
+    static bool showResult = false;
+    static unsigned int selectedAnswer = -1;
+
+    const float maxQuestionTime = m_roomState.answerTimeout;
+    static float questionTimeCounter = maxQuestionTime;
+    static float resultTimeCounter = m_maxCounterTime;
+
+    // Question countdown
+    if (hasQuestion) {
+        if (count(&questionTimeCounter, maxQuestionTime)) {
+            submit = RequestHandler::submitAnswerRequest(-1, 0);
+            hasQuestion = false;
+            showResult = true;
+            selectedAnswer = -1;
+        }
+    }
+
+    // Result countdown
+    if (showResult) {
+        if (count(&resultTimeCounter)) {
+            showResult = false;
+            questionTimeCounter = maxQuestionTime;
+            questionCount++;
+        }
+    }
+
+    // Get new question
+    if (!hasQuestion && !showResult) {
+        question = RequestHandler::getQuestionRequest();
+        if (question.status == 1)
+            hasQuestion = true;
+        selectedAnswer = -1;
+    }
+
+    if (!hasQuestion && !showResult) {
+        TextCentered("Waiting for question...");
+    } else {
+        std::stringstream stream;
+        stream << std::fixed << std::setprecision(2)
+               << questionTimeCounter; // Format time to %f.2
+        ImGui::Text(stream.str().c_str());
+
+        TextCentered(question.question.c_str());
+
+        for (auto i : question.answers) {
+            if (showResult) {
+                ImGui::PushID(1);
+                if (i.first == submit.correctAnswer) {
+                    // Make button green.
+                    ImGui::PushStyleColor(
+                        ImGuiCol_Button,
+                        (ImVec4)ImColor::HSV(0.35f, 0.95f, 0.7f));
+                    ImGui::PushStyleColor(
+                        ImGuiCol_ButtonHovered,
+                        (ImVec4)ImColor::HSV(0.35f, 0.95f, 0.7f));
+                    ImGui::PushStyleColor(
+                        ImGuiCol_ButtonActive,
+                        (ImVec4)ImColor::HSV(0.35f, 0.95f, 0.7f));
+                } else if (i.first == selectedAnswer) {
+                    // Make button red.
+                    ImGui::PushStyleColor(
+                        ImGuiCol_Button,
+                        (ImVec4)ImColor::HSV(0.0f, 0.95f, 0.95f));
+                    ImGui::PushStyleColor(
+                        ImGuiCol_ButtonHovered,
+                        (ImVec4)ImColor::HSV(0.0f, 0.95f, 0.95f));
+                    ImGui::PushStyleColor(
+                        ImGuiCol_ButtonActive,
+                        (ImVec4)ImColor::HSV(0.0f, 0.95f, 0.95f));
+                } else {
+                    // Make button grey.
+                    ImGui::PushStyleColor(
+                        ImGuiCol_Button,
+                        (ImVec4)ImColor::HSV(0.0f, 0.0f, 0.5f));
+                    ImGui::PushStyleColor(
+                        ImGuiCol_ButtonHovered,
+                        (ImVec4)ImColor::HSV(0.0f, 0.0f, 0.5f));
+                    ImGui::PushStyleColor(
+                        ImGuiCol_ButtonActive,
+                        (ImVec4)ImColor::HSV(0.0f, 0.0f, 0.5f));
+                }
+            }
+            if (ImGui::Button(i.second.c_str())) {
+                submit = RequestHandler::submitAnswerRequest(
+                    i.first, questionTimeCounter);
+                hasQuestion = false;
+                showResult = true;
+            }
+            if (showResult) {
+                if (selectedAnswer == -1) {
+                    // Question timed out.
+                    selectedAnswer =
+                        i.first; // Change selectedAnswer so there would be no
+                                 // incorrect highlight.
+                    continue;
+                }
+                ImGui::PopStyleColor(3);
+                ImGui::PopID();
+            }
+        }
+    }
+
+    if (ImGui::Button("Leave game")) {
+        RequestHandler::leaveGameRequest();
+        m_screen = Screens::Menu;
+    }
+}
+
+/**
+ * @brief Renders results screen.
+ */
+void ClientLayer::renderResults() {
+    static GetGameResultsResponse results = {0, std::vector<PlayerResults>()};
+    static float getResultsCounter = 0;
+    if (count(&getResultsCounter) && results.status == 0) {
+        results = RequestHandler::getGameResultsRequest();
+    }
+
+    if (results.status == 0) {
+        TextCentered("Please wait for all the players to finish...");
+        return;
+    }
+
+    if (ImGui::BeginTable("Room data", 3,
+                          ImGuiTableFlags_Resizable |
+                              ImGuiTableFlags_NoSavedSettings |
+                              ImGuiTableFlags_Borders)) {
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn();
+        ImGui::Text("Username");
+
+        ImGui::TableNextColumn();
+        ImGui::Text("Correct answers");
+
+        ImGui::TableNextColumn();
+        ImGui::Text("Average answer time");
+
+        for (auto i : results.results) {
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text(i.username.c_str());
+
+            std::string answers =
+                std::to_string(i.correctAnswerCount) + "/" +
+                std::to_string(i.correctAnswerCount + i.wrongAnswerCount);
+            ImGui::TableNextColumn();
+            ImGui::Text(answers.c_str());
+
+            ImGui::TableNextColumn();
+            ImGui::Text(std::to_string(i.averageAnswerTime).c_str());
+        }
+
+        ImGui::EndTable();
+    }
+
+    if (ImGui::Button("Menu"))
+        m_screen = Screens::Menu;
 }

@@ -131,7 +131,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo reqInf) {
             reqInf.buffer);
 
     GetPlayersInRoomResponse getPlayersRes = {
-        m_roomManager.getRoom(getPlayersReq.roomId).getAllUsers()};
+        m_roomManager.getRoom(getPlayersReq.roomId)->getAllUsers()};
 
     RequestResult reqRes = {
         JsonResponsePacketSerializer::serializeResponse(getPlayersRes),
@@ -181,18 +181,18 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo reqInf) {
         JsonResponsePacketDeserializer::deserializeJoinRoomRequest(
             reqInf.buffer);
 
-    Room room = m_roomManager.getRoom(joinRoomReq.roomId);
+    Room* room = m_roomManager.getRoom(joinRoomReq.roomId);
 
-    if (room.getMetadata().maxPlayers == room.getAllUsers().size())
+    if (room->getMetadata().maxPlayers == room->getAllUsers().size())
         throw std::exception("Room is full.");
 
-    room.addUser(m_user);
+    room->addUser(m_user);
 
     JoinRoomResponse joinRoomRes = {1};
 
     RequestResult reqRes = {
         JsonResponsePacketSerializer::serializeResponse(joinRoomRes), 
-        m_handlerFactory.createRoomMemberRequestHandler(room, m_user)};
+        m_handlerFactory.createRoomMemberRequestHandler(room->getMetadata().id, m_user)};
     return reqRes;
 }
 
@@ -207,9 +207,9 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo reqInf) {
         JsonResponsePacketDeserializer::deserializeCreateRoomRequest(
             reqInf.buffer);
 
-    RoomData roomData = {m_roomManager.getRooms().size() + 1,
+    RoomData roomData = { m_roomManager.getCurrentID(),
                          createRoomReq.roomName, createRoomReq.maxUsers,
-                         createRoomReq.questionCount, 0};
+                         createRoomReq.questionCount, createRoomReq.answerTimeout, 0};
     m_roomManager.createRoom(m_user, roomData);
 
     CreateRoomResponse createRoomRes = {1};
@@ -217,6 +217,6 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo reqInf) {
     RequestResult reqRes = {
         JsonResponsePacketSerializer::serializeResponse(createRoomRes),
         m_handlerFactory.createRoomAdminRequestHandler(
-            m_roomManager.getRoom(roomData.id), m_user)};
+            roomData.id, m_user)};
     return reqRes;
 }

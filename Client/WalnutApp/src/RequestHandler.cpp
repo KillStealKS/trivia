@@ -50,7 +50,7 @@ RequestHandler::signupRequest(std::string username, std::string password,
         throw std::exception("Invalid password");
     if (!std::regex_match(email, std::regex("^\\S+@\\S+$")))
         throw std::exception("Invalid email");
-    if (!std::regex_match(addr, std::regex("^\([A-z]+, \\d+, [A-z]+\)$")))
+    if (!std::regex_match(addr, std::regex("^[A-z]+, \\d+, [A-z]+$")))
         throw std::exception("Invalid address");
     if (!std::regex_match(phone, std::regex("^0\\d{1,2}\\d{7}$")))
         throw std::exception("Invalid phone");
@@ -379,9 +379,9 @@ GetQuestionResponse RequestHandler::getQuestionRequest() {
  *
  * @return SubmitAnswerResponse Response.
  */
-SubmitAnswerResponse
-RequestHandler::submitAnswerRequest(unsigned int answerId) {
-    SubmitAnswerRequest request = {answerId};
+SubmitAnswerResponse RequestHandler::submitAnswerRequest(unsigned int answerId,
+                                                         float timeRemaining) {
+    SubmitAnswerRequest request = {answerId, timeRemaining};
     std::vector<unsigned char> serializedRequest =
         Serializer::serializeRequest(request);
     std::vector<unsigned char> serializedResponse =
@@ -404,7 +404,8 @@ RequestHandler::submitAnswerRequest(unsigned int answerId) {
  * @return GetRoomResultsResponse Response.
  */
 GetGameResultsResponse RequestHandler::getGameResultsRequest() {
-    std::vector<unsigned char> serializedRequest{(unsigned char)RQ_GETGAMERESULTS};
+    std::vector<unsigned char> serializedRequest{
+        (unsigned char)RQ_GETGAMERESULTS};
     std::vector<unsigned char> serializedResponse =
         Communicator::communicator.sendRequest(serializedRequest);
 

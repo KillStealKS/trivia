@@ -4,34 +4,52 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include <random>
+#include <algorithm>
 
-typedef struct User {
+struct User {
     std::string username;
     std::string password;
     std::string email;
     std::string address;
     std::string phone;
     std::string date;
-} User;
+};
 
-typedef struct Statistics {
+struct Statistics {
     std::string username;
     int totalGames;
     int gamesWon;
     int totalAnswers;
     int correctAnswers;
-    int totalAnswerTime;
+    float totalAnswerTime;
     int highscore;
-} Statistics;
+};
 
-typedef struct Question {
-    int id;
-    std::string question;
-    std::string answer;
-    std::string incorrect1;
-    std::string incorrect2;
-    std::string incorrect3;
-} Question;
+class Question
+{
+public:
+    std::string getQuestion() const { return m_question; }
+    std::string getCorrectAnswer() const { return m_correctAnswer; }
+    std::vector<std::string> getShuffledAnswers() const { return m_shuffledAnswers; }
+
+    void setID(const int id) { m_id = id; }
+    void setQuestion(const std::string question) { m_question = question; }
+    void setCorrectAnswer(const std::string correctAnswer) { m_correctAnswer = correctAnswer; }
+    void insertIncorrctAnswer(const std::string incorrectAnswer) 
+        { m_incorrectAnswers.push_back(incorrectAnswer); }
+    void setShuffledAnswers(std::vector<std::string> shuffledAnswers) {
+        std::random_shuffle(shuffledAnswers.begin(), shuffledAnswers.end());
+        m_shuffledAnswers = shuffledAnswers;
+    }
+
+private:
+    int m_id;
+    std::string m_question;
+    std::string m_correctAnswer;
+    std::vector<std::string> m_incorrectAnswers;
+    std::vector<std::string> m_shuffledAnswers;
+};
 
 class IDatabase {
   public:
@@ -54,6 +72,8 @@ class IDatabase {
     virtual int getNumOfTotalAnswers(std::string username) = 0;
     virtual int getNumOfPlayerGames(std::string username) = 0;
     virtual std::vector<std::string> getHighscores(int num) = 0;
+
+    virtual int updateUserStatistics(std::string username, Statistics newStats) = 0;
 
     // Question methods
     virtual std::vector<Question> getQuestions(int amount) = 0;

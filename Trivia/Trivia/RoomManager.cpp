@@ -7,6 +7,7 @@
  * @param metadata Room metadata.
  */
 void RoomManager::createRoom(LoggedUser user, RoomData metadata) {
+    m_currentID++;
     std::lock_guard<std::mutex> roomLock(*m_roomsMutex);
     m_rooms.insert({metadata.id, Room(user, metadata)});
 }
@@ -29,7 +30,7 @@ void RoomManager::deleteRoom(int ID) {
  */
 unsigned int RoomManager::getRoomState(int ID) {
     std::lock_guard<std::mutex> roomLock(*m_roomsMutex);
-    return (m_rooms[ID].getMetadata().isActive); //?
+    return (m_rooms[ID].getMetadata().isActive);
 }
 
 /**
@@ -47,10 +48,16 @@ std::vector<RoomData> RoomManager::getRooms() {
     return data;
 }
 
-Room RoomManager::getRoom(int roomID) {
-    for (auto i : m_rooms) {
-        if (i.first == roomID)
-            return i.second;
+/**
+ * @brief getter for room by ID.
+ * 
+ * @param roomID The room's ID.
+ * @return a pointer to the room (it's better this way don't be mad)
+ */
+Room* RoomManager::getRoom(int roomID) {
+    for (auto i = m_rooms.begin(); i != m_rooms.end(); i++) {
+        if (i->first == roomID)
+            return &(i->second);
     }
     throw std::exception(__FUNCTION__ " - roomID not found.");
 }

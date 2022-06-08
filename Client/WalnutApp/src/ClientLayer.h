@@ -21,6 +21,7 @@ enum class Screens {
     Highscore,
     Room,
     Game,
+    Results,
 };
 
 class ClientLayer : public Walnut::Layer {
@@ -28,12 +29,14 @@ class ClientLayer : public Walnut::Layer {
     float m_deltaTime;
     Walnut::Application *m_app;
 
-    Screens m_screen = Screens::Login;
+    Screens m_screen;
     bool m_isAdmin;
-    float m_maxCounterTime = 3;
+    static float m_maxCounterTime;
+    GetRoomStateResponse m_roomState;
 
     void updateDeltaTime();
-    bool count(float *counter);
+    bool count(float *counter, float maxCountTime = m_maxCounterTime,
+               bool autoReset = true);
 
     static void HelpMarker(const char *desc);
     void renderLogin();
@@ -44,9 +47,12 @@ class ClientLayer : public Walnut::Layer {
     void renderPersonalStats();
     void renderHighscore();
     void renderRoom();
+    void renderGame();
+    void renderResults();
 
   public:
-    ClientLayer(Walnut::Application *app) : m_app(app) {}
+    ClientLayer(Walnut::Application *app)
+        : m_deltaTime(0.0f), m_app(app), m_screen(Screens::Login), m_isAdmin(false) {}
 
     virtual void OnAttach() override;
     virtual void OnUIRender() override;
